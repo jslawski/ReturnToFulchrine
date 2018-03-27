@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager instance;
 
+	public const int EnemyLayerNum = 10;
+
 	private void Awake()
 	{
 		GameManager.instance = this;
