@@ -7,8 +7,11 @@ using UnityEngine;
 /// Movement speed, equipped weapons, enchantments, etc. 
 /// Should not be instantiated, but rather referenced by the Player class. 
 /// </summary>
-public class PlayerCharacter 
+[CreateAssetMenu(fileName = "New Player Character", menuName = "PlayerCharacter")]
+public class PlayerCharacter : ScriptableObject
 {
+	public PlayerCharacterType type;
+
 	public float moveSpeed = 5f;
 
 	public Material characterMaterial;

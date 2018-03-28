@@ -40,12 +40,13 @@ public class GrabbableEquipment : MonoBehaviour {
 		GameObject instance = GameObject.Instantiate(grabbableWeaponPrefab, instantiationPosition, new Quaternion()) as GameObject;
 		GrabbableWeapon grabbableWeaponComponent = instance.GetComponent<GrabbableWeapon>();
 		grabbableWeaponComponent.weaponDetails = weaponDetails;
+
 		grabbableWeaponComponent.StartCoroutine("LaunchGrabbableEquipment");
 	}
 
 	public static void GenerateGrabbableArmor(Vector3 instantiationPosition, Armor armorDetails)
 	{
-		GameObject grabbableArmorPrefab = Resources.Load<GameObject>("GrabbableWeapon");
+		GameObject grabbableArmorPrefab = Resources.Load<GameObject>("GrabbableArmor");
 
 		GameObject instance = GameObject.Instantiate(grabbableArmorPrefab, instantiationPosition, new Quaternion()) as GameObject;
 		GrabbableArmor grabbableArmorComponent = instance.GetComponent<GrabbableArmor>();

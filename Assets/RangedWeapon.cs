@@ -2,34 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New RangedWeapon", menuName = "Equipment/Weapon/RangedWeapon")]
 public class RangedWeapon : Weapon
 {
 	//Ranged Weapon Exclusives
 	[SerializeField]
-	private string rangedProjectilePrefabName;
+	private GameObject rangedProjectilePrefab;
+	[SerializeField]
 	private float projectileVelocity = 5f;
+	[SerializeField]
 	private float projectileLifetime = 3f;
-	private bool currentlyAttacking = false;
 
 	//AimAssist parameters
 	public bool useAimAssist = true;
+	[SerializeField]
 	private float aimAssistSphereRadius = 1f;
+	[SerializeField]
 	private float aimAssistMaxDistance = 15f;
 
-
-	public RangedWeapon(string prefabName, float damageOutput, float windUpTime, float windDownTime, float projectileVelocity, float projectileLifetime)
-	{
-		this.rangedProjectilePrefabName = prefabName;
-		this.damageOutput = damageOutput;
-		this.projectileVelocity = projectileVelocity;
-		this.projectileLifetime = projectileLifetime;
-		this.equipmentClass = EquipmentClass.Light;
-		this.windUpTime = windUpTime;
-		this.windDownTime = windDownTime;
-	}
-		
 	public override IEnumerator Attack(Creature wieldingCreature)
 	{
+		Debug.Log("Currently Attacking? " + this.currentlyAttacking);
+
 		if (this.currentlyAttacking == true)
 		{
 			yield break;
@@ -43,9 +37,7 @@ public class RangedWeapon : Weapon
 		{
 			yield return new WaitForSeconds(this.windUpTime);
 
-			GameObject projectilePrefab = Resources.Load<GameObject>(this.rangedProjectilePrefabName);
-
-			GameObject currentProjectileObject = GameObject.Instantiate(projectilePrefab, wieldingCreature.transform.position, new Quaternion()) as GameObject;
+			GameObject currentProjectileObject = GameObject.Instantiate(this.rangedProjectilePrefab, wieldingCreature.transform.position, new Quaternion()) as GameObject;
 			RangedProjectile currentProjectile = currentProjectileObject.GetComponent<RangedProjectile>();
 
 			Vector3 launchDirection = wieldingCreature.transform.up;

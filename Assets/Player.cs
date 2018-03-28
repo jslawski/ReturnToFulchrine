@@ -69,8 +69,7 @@ public class Player : Creature
 
 	public void Start()
 	{
-		//base.Start();
-		this.currentCharacter = CharacterSelector.GetCharacterAtIndex(0);
+		this.currentCharacter = CharacterSelector.GetCharacterByType(PlayerCharacterType.Warrior);
 		this.SwapCharacter(this.currentCharacter);
 		this.moveSpeed = this.currentCharacter.moveSpeed;
 	}
@@ -109,6 +108,8 @@ public class Player : Creature
 
 		if (this.device.Action2.WasPressed)
 		{
+			this.DropEquipment(this.activeWeapon);
+			this.DropEquipment(this.activeArmor);
 			this.TakeDamage(150f);
 		}
 
@@ -143,62 +144,82 @@ public class Player : Creature
 		this.currentControls = Player.playerControlsDict[Player.LockRotationPlayerControlsKey];
 	}
 
-	private PlayerCharacterType GetPlayerCharacterFromEquipmentClass(EquipmentClass equipmentClass)
+	private PlayerCharacterType GetPlayerCharacterFromEquipmentClass(CreatureType creatureType)
 	{
-		switch (equipmentClass)
+		switch (creatureType)
 		{
-		case EquipmentClass.Magic:
+		case CreatureType.Magic:
 			return PlayerCharacterType.Mage;
-		case EquipmentClass.Light:
+		case CreatureType.Light:
 			return PlayerCharacterType.Archer;
-		case EquipmentClass.Medium:
+		case CreatureType.Medium:
 			return PlayerCharacterType.Warrior;
-		case EquipmentClass.Heavy:
+		case CreatureType.Heavy:
 			return PlayerCharacterType.Tank;
 		default:
-			Debug.LogError("Player.GetPlayerCharacterFromEquipmentClass: Unknown EquipmentClass: " + equipmentClass + ". Unable to determine PlayerCharacterType");
+			Debug.LogError("Player.GetPlayerCharacterFromEquipmentClass: Unknown CreatureType: " + creatureType + ". Unable to determine PlayerCharacterType");
 			return PlayerCharacterType.None;
+		}
+	}
+
+	private void SetActiveWeaponIfCurrentCharacter(PlayerCharacter selectedCharacter, Weapon selectedWeapon)
+	{
+		if (selectedCharacter == this.currentCharacter)
+		{
+			this.activeWeapon = selectedWeapon;
+		}
+	}
+
+	private void SetActiveArmorIfCurrentCharacter(PlayerCharacter selectedCharacter, Armor selectedArmor)
+	{
+		if (selectedCharacter == this.currentCharacter)
+		{
+			this.activeArmor = selectedArmor;
 		}
 	}
 
 	#region Creature implementation
 	public override void EquipWeapon(Weapon weaponToEquip)
 	{
-		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(weaponToEquip.equipmentClass);
-		PlayerCharacter selectedPlayerCharacter = CharacterSelector.characterDictionary[playerCharacterType];
+		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(weaponToEquip.equippableCreatureType);
+		PlayerCharacter selectedPlayerCharacter = CharacterSelector.GetCharacterByType(playerCharacterType);
 
 		this.DropEquipment(selectedPlayerCharacter.weapon);
 		selectedPlayerCharacter.weapon = weaponToEquip;
+		this.SetActiveWeaponIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.weapon);
 	}
 
 	public override void EquipArmor(Armor armorToEquip)
 	{
-		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(armorToEquip.equipmentClass);
-		PlayerCharacter selectedPlayerCharacter = CharacterSelector.characterDictionary[playerCharacterType];
+		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(armorToEquip.equippableCreatureType);
+		PlayerCharacter selectedPlayerCharacter = CharacterSelector.GetCharacterByType(playerCharacterType);
 
 		this.DropEquipment(selectedPlayerCharacter.armor);
 		selectedPlayerCharacter.armor = armorToEquip;
+		this.SetActiveArmorIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.armor);
 	}
 
 	public override void DropEquipment(Equipment equipmentToDrop)
 	{
-		if (equipmentToDrop.equipmentClass == EquipmentClass.None)
+		if (equipmentToDrop.equippableCreatureType == CreatureType.None)
 		{
 			return;
 		}
 
-		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(equipmentToDrop.equipmentClass);
-		PlayerCharacter selectedPlayerCharacter = CharacterSelector.characterDictionary[playerCharacterType];
+		PlayerCharacterType playerCharacterType = this.GetPlayerCharacterFromEquipmentClass(equipmentToDrop.equippableCreatureType);
+		PlayerCharacter selectedPlayerCharacter = CharacterSelector.GetCharacterByType(playerCharacterType);
 
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:
 			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, selectedPlayerCharacter.weapon);
-			selectedPlayerCharacter.weapon = new MeleeWeapon();
+			selectedPlayerCharacter.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
+			this.SetActiveWeaponIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.weapon);
 			break;
 		case EquipmentType.Armor:
 			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, selectedPlayerCharacter.armor);
-			selectedPlayerCharacter.armor = new Armor();
+			selectedPlayerCharacter.armor = Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked");
+			this.SetActiveArmorIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.armor);
 			break;
 		default:
 			Debug.Log("Player.DropEquipment: Unknown EquipmentType: " + equipmentToDrop.equipmentType + ". Unable to drop equipment");

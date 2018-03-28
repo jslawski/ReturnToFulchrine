@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CreatureType { Magic, Light, Medium, Heavy, None };
+
 public abstract class Creature : MonoBehaviour, IDamageableObject 
 {
+	public CreatureType type;
+
 	public float moveSpeed = 5;
 
 	public GameObject attackZone;
@@ -52,7 +56,6 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		{
 			this.hitPoints += healthRestored;
 		}
-
 	}
 	#endregion
 
@@ -68,19 +71,25 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 	public virtual void EquipWeapon(Weapon weaponToEquip)
 	{
-		this.DropEquipment(this.activeWeapon);
-		this.activeWeapon = weaponToEquip;
+		if (weaponToEquip.equippableCreatureType == this.type)
+		{
+			this.DropEquipment(this.activeWeapon);
+			this.activeWeapon = weaponToEquip;
+		}
 	}
 
 	public virtual void EquipArmor(Armor armorToEquip)
 	{
-		this.DropEquipment(this.activeArmor);
-		this.activeArmor = armorToEquip;
+		if (armorToEquip.equippableCreatureType == this.type)
+		{
+			this.DropEquipment(this.activeArmor);
+			this.activeArmor = armorToEquip;
+		}
 	}
 
 	public virtual void DropEquipment(Equipment equipmentToDrop)
 	{
-		if (equipmentToDrop.equipmentClass == EquipmentClass.None)
+		if (equipmentToDrop.equippableCreatureType == CreatureType.None)
 		{
 			return;
 		}
@@ -89,11 +98,11 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		{
 		case EquipmentType.Weapon:
 			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, this.activeWeapon);
-			this.activeWeapon = new MeleeWeapon();
+			this.activeWeapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
 			break;
 		case EquipmentType.Armor:
 			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, this.activeArmor);
-			this.activeArmor = new Armor();
+			this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked");
 			break;
 		}
 	}

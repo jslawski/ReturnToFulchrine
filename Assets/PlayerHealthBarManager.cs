@@ -19,7 +19,7 @@ public static class PlayerHealthBarManager {
 		foreach (PlayerCharacterType character in orderedPlayerCharacterList)
 		{
 			PlayerHealthBarManager.aliveCharacters.Push(character);
-			PlayerHealthBarManager.totalAliveCharacterHitPoints += CharacterSelector.characterDictionary[character].hitPoints;
+			PlayerHealthBarManager.totalAliveCharacterHitPoints += CharacterSelector.GetCharacterByType(character).hitPoints;
 		}
 
 		PlayerHealthBarManager.currentTotalHitPoints = PlayerHealthBarManager.totalAliveCharacterHitPoints;
@@ -53,7 +53,7 @@ public static class PlayerHealthBarManager {
 
 	private static void AttemptKillCharacter()
 	{
-		PlayerCharacter topAliveCharacter = CharacterSelector.characterDictionary[PlayerHealthBarManager.aliveCharacters.Peek()];
+		PlayerCharacter topAliveCharacter = CharacterSelector.GetCharacterByType(PlayerHealthBarManager.aliveCharacters.Peek());
 
 		//Kill player characters
 		while (PlayerHealthBarManager.currentTotalHitPoints <= (PlayerHealthBarManager.totalAliveCharacterHitPoints - topAliveCharacter.hitPoints))
@@ -61,9 +61,10 @@ public static class PlayerHealthBarManager {
 			PlayerCharacterType dyingPlayerCharacterType = PlayerHealthBarManager.aliveCharacters.Pop();
 			PlayerHealthBarManager.deadCharacters.Push(dyingPlayerCharacterType);
 			topAliveCharacter.isDead = true;
+			topAliveCharacter.weapon.currentlyAttacking = false;
 			PlayerHealthBarManager.totalAliveCharacterHitPoints -= topAliveCharacter.hitPoints;
 
-			topAliveCharacter = CharacterSelector.characterDictionary[PlayerHealthBarManager.aliveCharacters.Peek()];
+			topAliveCharacter = CharacterSelector.GetCharacterByType(PlayerHealthBarManager.aliveCharacters.Peek());
 		}
 	}
 
@@ -74,7 +75,7 @@ public static class PlayerHealthBarManager {
 		{
 			PlayerCharacterType revivingPlayerCharacterType = PlayerHealthBarManager.deadCharacters.Pop();
 			PlayerHealthBarManager.aliveCharacters.Push(revivingPlayerCharacterType);
-			PlayerCharacter revivingCharacter = CharacterSelector.characterDictionary[revivingPlayerCharacterType];
+			PlayerCharacter revivingCharacter = CharacterSelector.GetCharacterByType(revivingPlayerCharacterType);
 			revivingCharacter.isDead = false;
 			PlayerHealthBarManager.totalAliveCharacterHitPoints += revivingCharacter.hitPoints;
 		}

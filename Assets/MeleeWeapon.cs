@@ -2,30 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New MeleeWeapon", menuName = "Equipment/Weapon/MeleeWeapon")]
 public class MeleeWeapon : Weapon
 {
 	//Melee Weapon Exclusives
 	public float swingTime = 1f;
 	public Vector2 attackZoneDimensions;
-
-	public MeleeWeapon(EquipmentClass weaponClass, float damageOutput, float windUpTime, float windDownTime, float swingTime, Vector3 attackZoneDimensions)
-	{
-		this.equipmentClass = weaponClass;
-		this.damageOutput = damageOutput;
-		this.windUpTime = windUpTime;
-		this.windDownTime = windDownTime;
-		this.swingTime = swingTime;
-		this.attackZoneDimensions = attackZoneDimensions;
-	}
-
-	public MeleeWeapon()
-	{
-		this.equipmentClass = EquipmentClass.None;
-		this.damageOutput = 1f;
-		this.windUpTime = 0.3f;
-		this.windDownTime = 0.1f;
-		this.attackZoneDimensions = new Vector2(1f, 1f);
-	}
 
 	public void PositionWeapon(Creature wieldingCreature)
 	{

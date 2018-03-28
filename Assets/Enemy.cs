@@ -6,8 +6,8 @@ public class Enemy : Creature
 {
 	public void Start()
 	{
-		this.activeArmor = new Armor(EquipmentClass.Light, 2f);
-		this.activeWeapon = new MeleeWeapon();
+		this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + "Leather");
+		this.activeWeapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
 	}
 
 	public override void DisableMovement(){}

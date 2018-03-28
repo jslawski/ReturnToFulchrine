@@ -9,7 +9,11 @@ public abstract class Weapon : Equipment
 	public float windUpTime;
 	public float windDownTime;
 
+	[HideInInspector]
 	public bool continueAttacking = false;
+
+	[HideInInspector]
+	public bool currentlyAttacking = false;
 
 	//public Enchantments of some sort
 

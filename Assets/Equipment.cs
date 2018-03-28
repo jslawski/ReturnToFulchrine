@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EquipmentType { Weapon, Armor };
-public enum EquipmentClass { Magic, Light, Medium, Heavy, None };
 
-public abstract class Equipment 
+public abstract class Equipment : ScriptableObject
 {
-	public EquipmentClass equipmentClass;
+	public CreatureType equippableCreatureType;
 	public EquipmentType equipmentType;
-
-	public Creature wieldingCreature;
 
 	//Enchantments go here?
 }

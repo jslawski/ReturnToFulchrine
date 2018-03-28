@@ -2,19 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New Armor", menuName = "Equipment/Armor")]
 public class Armor : Equipment
 {
 	public float armorClass;
 
-	public Armor(EquipmentClass equipmentClass, float armorClass)
-	{
-		this.equipmentClass = equipmentClass;
-		this.armorClass = armorClass;
-	}
-
-	public Armor()
-	{
-		this.equipmentClass = EquipmentClass.None;
-	}
-
+	//Enchantments
 }
