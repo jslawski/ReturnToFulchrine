@@ -22,8 +22,6 @@ public class RangedWeapon : Weapon
 
 	public override IEnumerator Attack(Creature wieldingCreature)
 	{
-		Debug.Log("Currently Attacking? " + this.currentlyAttacking);
-
 		if (this.currentlyAttacking == true)
 		{
 			yield break;
