@@ -89,11 +89,12 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 	public virtual void DropEquipment(Equipment equipmentToDrop)
 	{
+		//Don't drop anything if unarmed
 		if (equipmentToDrop.equippableCreatureType == CreatureType.None)
 		{
 			return;
 		}
-
+			
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:
@@ -104,6 +105,9 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, this.activeArmor);
 			this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked");
 			break;
+		default:
+			Debug.LogError("Creature.DropEquipment: Unknown EquipmentType: " + equipmentToDrop.equipmentType + ". Unable to drop equipment.");
+			return;
 		}
 	}
 

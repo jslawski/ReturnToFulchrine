@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class ScriptableObjectPaths {
-	private const string MagicEquipmentType = "Magic/";
-	private const string LightEquipmentType = "Light/";
-	private const string MediumEquipmentType = "Medium/";
-	private const string HeavyEquipmentType = "Heavy/";
+	public const string MagicEquipmentType = "Magic/";
+	public const string LightEquipmentType = "Light/";
+	public const string MediumEquipmentType = "Medium/";
+	public const string HeavyEquipmentType = "Heavy/";
 
 	public const string EquipmentPath = "Equipment/";
 	public const string WeaponsPath = EquipmentPath + "Weapons/";

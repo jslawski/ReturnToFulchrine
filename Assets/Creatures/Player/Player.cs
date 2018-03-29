@@ -109,8 +109,8 @@ public class Player : Creature
 		if (this.device.Action2.WasPressed)
 		{
 			this.DropEquipment(this.activeWeapon);
-			this.DropEquipment(this.activeArmor);
-			this.TakeDamage(150f);
+			//this.DropEquipment(this.activeArmor);
+			//this.TakeDamage(150f);
 		}
 
 		if (this.device.Action3.WasPressed)

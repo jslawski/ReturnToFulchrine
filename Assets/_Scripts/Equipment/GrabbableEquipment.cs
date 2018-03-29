@@ -20,7 +20,7 @@ public class GrabbableEquipment : MonoBehaviour {
 		this.gameObject.GetComponent<BoxCollider>().enabled = true;
 	}
 
-	private IEnumerator LaunchGrabbableEquipment()
+	public IEnumerator LaunchGrabbableEquipment()
 	{
 		PolarCoordinate instantiationDirection = new PolarCoordinate(1.0f, Random.Range(0f, 360f));
 		float currentLaunchMagnitude = this.instantiationLaunchMagnitude;
