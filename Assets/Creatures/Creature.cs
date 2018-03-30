@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum CreatureType { Magic, Light, Medium, Heavy, None };
@@ -20,6 +21,11 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	protected Animator damageAnimator;
 
 	public float totalHitPoints = 100f;
+
+	[SerializeField]
+	private InteractableTriggerZone interactableTriggerZone;
+	protected List<InteractableObject> interactableObjectsInRange;
+	private IOrderedEnumerable<InteractableObject> sortedInteractableObjects;
 
 	#region IDamageableObject implementation
 	protected float _hitPoints = 100f;
@@ -58,6 +64,13 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 	#endregion
+
+	public virtual void Awake()
+	{
+		this.interactableObjectsInRange = new List<InteractableObject>();
+		this.interactableTriggerZone.onInteractableZoneEntered += this.AddInteractableObject;
+		this.interactableTriggerZone.onInteractableZoneExited += this.RemoveInteractableObject;
+	}
 
 	public void Move(Vector2 moveVector)
 	{
@@ -135,4 +148,48 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 		return resultant;
 	}
+
+	#region InteractableObject handling
+	protected IEnumerator HandleInteractableObjects()
+	{
+		while (this.interactableObjectsInRange.Count > 0)
+		{
+			//Sort list of interactable objects from closest to furthest
+			foreach (InteractableObject currentObject in this.interactableObjectsInRange)
+			{
+				currentObject.distanceFromCreature = Vector3.Distance(this.transform.position, currentObject.transform.position);
+			}
+			this.sortedInteractableObjects = this.interactableObjectsInRange.OrderBy(i => i.distanceFromCreature);
+
+			yield return null;
+		}
+	}
+
+	protected void AddInteractableObject(InteractableObject objectToAdd)
+	{
+		if (this.interactableObjectsInRange.Count == 0)
+		{
+			this.interactableObjectsInRange.Add(objectToAdd);
+			this.StartCoroutine(HandleInteractableObjects());
+		}
+		else
+		{
+			this.interactableObjectsInRange.Add(objectToAdd);
+		}
+	}
+
+	public void RemoveInteractableObject(InteractableObject objectToRemove)
+	{
+		this.interactableObjectsInRange.Remove(objectToRemove);
+	}
+
+	protected void InteractWithClosestObject()
+	{
+		if (this.sortedInteractableObjects.Count() > 0)
+		{
+			InteractableObject closestObject = this.sortedInteractableObjects.First();
+			closestObject.Interact(this);
+		}
+	}
+	#endregion
 }

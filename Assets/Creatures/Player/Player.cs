@@ -59,12 +59,13 @@ public class Player : Creature
 	#endregion
 
 	// Use this for initialization
-	private void Awake() 
+	public override void Awake() 
 	{
 		this.device = InputManager.Devices[0];
 		this.currentControls = new PlayerControls(this.device);
 		Player.playerControlsDict = new Dictionary<string, PlayerControls>();
 		this.PopulatePlayerControls();
+		base.Awake();
 	}
 
 	public void Start()
@@ -106,16 +107,16 @@ public class Player : Creature
 			this.currentCharacter.weapon.continueAttacking = false;
 		}
 
+		if (this.currentControls.interactButton != null && this.currentControls.interactButton.WasPressed)
+		{
+			this.InteractWithClosestObject();
+		}
+
 		if (this.device.Action2.WasPressed)
 		{
 			this.DropEquipment(this.activeWeapon);
 			//this.DropEquipment(this.activeArmor);
 			//this.TakeDamage(150f);
-		}
-
-		if (this.device.Action3.WasPressed)
-		{
-			this.GainHealth(150f);
 		}
 	}
 
@@ -249,12 +250,12 @@ public class Player : Creature
 
 	public PlayerControls PopulateDisablePlayerControls()
 	{
-		return new PlayerControls(null, null, null, null, null, null);
+		return new PlayerControls(null, null, null, null, null, null, null);
 	}
 
 	public PlayerControls PopulateLockRotationPlayerControls()
 	{
-		return new PlayerControls(null, this.device.LeftStick, this.device.RightStick, this.device.LeftBumper, this.device.RightBumper, this.device.Action1);
+		return new PlayerControls(null, this.device.LeftStick, this.device.RightStick, this.device.LeftBumper, this.device.RightBumper, this.device.Action1, null);
 	}
 	#endregion
 

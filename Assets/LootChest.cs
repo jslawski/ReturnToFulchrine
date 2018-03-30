@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Base Loot Chest class.  Make this abstract in the future when chest rarities are a thing.
 /// </summary>
-public class LootChest : MonoBehaviour {
+public class LootChest : InteractableObject {
 
 	private string GetResourcePath(EquipmentType equipmentType, CreatureType creatureType)
 	{
@@ -78,9 +78,10 @@ public class LootChest : MonoBehaviour {
 		}
 	}
 
-	public void OnTriggerEnter(Collider other)
+	public override void Interact(Creature creature)
 	{	
 		this.GenerateLoot();
+		creature.RemoveInteractableObject(this);
 		Destroy(this.gameObject);
 	}
 }

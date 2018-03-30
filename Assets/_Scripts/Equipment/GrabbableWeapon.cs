@@ -6,14 +6,9 @@ public class GrabbableWeapon : GrabbableEquipment {
 
 	public Weapon weaponDetails;
 
-	private void OnTriggerEnter(Collider other)
+	public override void Interact(Creature creature)
 	{
-		Creature collidingCreature = other.gameObject.GetComponent<Creature>();
-
-		if (collidingCreature != null)
-		{
-			collidingCreature.EquipWeapon(this.weaponDetails);
-			Destroy(this.gameObject);
-		}
+		creature.EquipWeapon(this.weaponDetails);
+		base.Interact(creature);
 	}
 }

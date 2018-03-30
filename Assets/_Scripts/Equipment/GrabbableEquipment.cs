@@ -4,7 +4,7 @@ using UnityEngine;
 
 using PolarCoordinates;
 
-public class GrabbableEquipment : MonoBehaviour {
+public abstract class GrabbableEquipment : InteractableObject {
 
 	private float activationTime = 0.5f;
 
@@ -52,5 +52,11 @@ public class GrabbableEquipment : MonoBehaviour {
 		GrabbableArmor grabbableArmorComponent = instance.GetComponent<GrabbableArmor>();
 		grabbableArmorComponent.armorDetails = armorDetails;
 		grabbableArmorComponent.StartCoroutine("LaunchGrabbableEquipment");
+	}
+
+	public override void Interact(Creature creature)
+	{
+		creature.RemoveInteractableObject(this);
+		Destroy(this.gameObject);
 	}
 }

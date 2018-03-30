@@ -11,6 +11,7 @@ public class PlayerControls
 	public InputControl characterSelectLeft;
 	public InputControl characterSelectRight;
 	public InputControl attackButton;
+	public InputControl interactButton;
 
 	//Initialize PlayerControls stuct with default controls
 	public PlayerControls(InputDevice device)
@@ -21,9 +22,10 @@ public class PlayerControls
 		this.characterSelectLeft = device.LeftBumper;
 		this.characterSelectRight = device.RightBumper;
 		this.attackButton = device.Action1;
+		this.interactButton = device.Action3;
 	}
 
-	public PlayerControls(TwoAxisInputControl movementControl, TwoAxisInputControl rotateControl, TwoAxisInputControl characterSelectControl, InputControl characterSelectLeft, InputControl characterSelectRight, InputControl attackButton)
+	public PlayerControls(TwoAxisInputControl movementControl, TwoAxisInputControl rotateControl, TwoAxisInputControl characterSelectControl, InputControl characterSelectLeft, InputControl characterSelectRight, InputControl attackButton, InputControl interactButton)
 	{
 		this.movementControl = movementControl;
 		this.rotateControl = rotateControl;
@@ -31,6 +33,7 @@ public class PlayerControls
 		this.characterSelectLeft = characterSelectLeft;
 		this.characterSelectRight = characterSelectRight;
 		this.attackButton = attackButton;
+		this.interactButton = interactButton;
 	}
 
 	public void DisableControls()
@@ -41,5 +44,6 @@ public class PlayerControls
 		this.characterSelectLeft = null;
 		this.characterSelectRight = null;
 		this.attackButton = null;
+		this.interactButton = null;
 	}
 }
