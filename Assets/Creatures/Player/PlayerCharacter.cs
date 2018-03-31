@@ -24,13 +24,5 @@ public class PlayerCharacter : ScriptableObject
 
 	public bool isDead = false;
 
-	public PlayerCharacter(float moveSpeed, Weapon weapon, Armor armor, float hitPoints, Material characterMaterial, bool isDead = false)
-	{
-		this.moveSpeed = moveSpeed;
-		this.weapon = weapon;
-		this.armor = armor;
-		this.hitPoints = hitPoints;
-		this.characterMaterial = characterMaterial;
-		this.isDead = isDead;
-	}
+	public List<StatusEffect> activeStatusEffects;
 }

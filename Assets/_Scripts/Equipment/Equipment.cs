@@ -9,7 +9,5 @@ public abstract class Equipment : ScriptableObject
 	public CreatureType equippableCreatureType;
 	public EquipmentType equipmentType;
 
-	public Equipment() {}
-
-	//Enchantments go here?
+	public List<Enchantment> enchantments;
 }
