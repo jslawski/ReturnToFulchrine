@@ -46,11 +46,20 @@ public class GameManager : MonoBehaviour {
 
 	public static Dictionary<string, int> GetEnchantmentLevelsOnEquipment(Equipment equipment)
 	{
-		Dictionary<int, string> levelDictionary = new Dictionary<int, string>();
+		Dictionary<string, int> levelDictionary = new Dictionary<string, int>();
 
 		foreach (Enchantment enchantment in equipment.enchantments)
 		{
-			levelDictionary[enchantment.enchantmentName] += 1;
+			if (levelDictionary.ContainsKey(enchantment.enchantmentName) == true)
+			{
+				levelDictionary[enchantment.enchantmentName] += 1;
+			}
+			else
+			{
+				levelDictionary.Add(enchantment.enchantmentName, 1);
+			}
 		}
+
+		return levelDictionary;
 	}
 }

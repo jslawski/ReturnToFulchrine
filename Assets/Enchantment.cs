@@ -7,6 +7,6 @@ public class Enchantment : ScriptableObject {
 
 	public string enchantmentName;
 
-	public StatusEffect weaponStatusEffect;
-	public StatusEffect armorStatusEffect;
+	public StatusEffectAsset weaponStatusEffect;
+	public StatusEffectAsset armorStatusEffect;
 }

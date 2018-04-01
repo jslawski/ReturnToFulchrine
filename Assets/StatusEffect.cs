@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public abstract class StatusEffect : MonoBehaviour{
+public abstract class StatusEffect : MonoBehaviour {
 
 	public float remainingDuration;
-
-	public bool activateOnEquip = false;
-
-	public StatusEffect(){}
+	public int level;
+	public Creature affectedCreature;
 
 	public abstract void TryApplyStatusEffect(int enchantmentLevel, Creature affectedCreature);
 	public abstract void ApplyStatusEffect(int enchantmentLevel, Creature affectedCreature);
@@ -31,4 +30,10 @@ public abstract class StatusEffect : MonoBehaviour{
 	{
 		this.StopAllCoroutines();
 	}
+
+	/// <summary>
+	/// Should only be used to remove status effects that are wrongfully put on a creature
+	/// before they take any effect
+	/// </summary>
+	public abstract void ForceRemoveStatusEffect();
 }

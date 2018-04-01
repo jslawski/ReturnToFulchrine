@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public enum CreatureType { Magic, Light, Medium, Heavy, None };
 
@@ -26,8 +27,6 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	private InteractableTriggerZone interactableTriggerZone;
 	protected List<InteractableObject> interactableObjectsInRange;
 	private IOrderedEnumerable<InteractableObject> sortedInteractableObjects;
-
-	protected List<StatusEffect> activeStatusEffects;
 
 	#region IDamageableObject implementation
 	protected float _hitPoints = 100f;
@@ -72,7 +71,6 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		this.interactableObjectsInRange = new List<InteractableObject>();
 		this.interactableTriggerZone.onInteractableZoneEntered += this.AddInteractableObject;
 		this.interactableTriggerZone.onInteractableZoneExited += this.RemoveInteractableObject;
-		this.activeStatusEffects = new List<StatusEffect>();
 	}
 
 	public void Move(Vector2 moveVector)
@@ -85,33 +83,58 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		this.gameObject.transform.up = forwardVector;
 	}
 
-	public virtual void ToggleEquipStatusEffects(Equipment equipment, bool activateStatusEffect = false)
+	public virtual void ActivateOnEquipStatusEffects(Equipment equipment)
 	{
 		Dictionary<string, int> enchantmentLevels = GameManager.GetEnchantmentLevelsOnEquipment(equipment);
 
 		foreach (Enchantment enchantment in equipment.enchantments)
 		{
-			StatusEffect currentStatusEffect;
-			int enchantmentLevel = 0;
+			StatusEffectAsset currentStatusEffectAsset;
+			int enchantmentLevel = enchantmentLevels[enchantment.enchantmentName];;
 
 			switch (equipment.equipmentType)
 			{
 			case EquipmentType.Weapon:
-				currentStatusEffect = enchantment.weaponStatusEffect;
+				currentStatusEffectAsset = enchantment.weaponStatusEffect;
 				break;
 			case EquipmentType.Armor:
-				currentStatusEffect = enchantment.armorStatusEffect;
+				currentStatusEffectAsset = enchantment.armorStatusEffect;
 				break;
 			default:
-				Debug.LogError("Creature.UnequipEquipmentEnchantments: UnknownEquipmentType " + equipment.equipmentType + ". Unable to unequip enchantment.");
+				Debug.LogError("Creature.ActivateOnEquipStatusEffects: UnknownEquipmentType " + equipment.equipmentType + ". Unable to unequip enchantment.");
 				return;
 			}
 
-			enchantmentLevel = enchantmentLevels[enchantment.enchantmentName];
-
-			if (currentStatusEffect.activateOnEquip == true)
+			if (currentStatusEffectAsset.activateOnEquip == true)
 			{
-				(activateStatusEffect == true) ? currentStatusEffect.ApplyStatusEffect(enchantmentLevel, this) : currentStatusEffect.StopStatusEffect();
+				StatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType(currentStatusEffectAsset.statusEffectName)) as StatusEffect;
+				currentStatusEffect.ApplyStatusEffect(enchantmentLevel, this);
+			}
+		}
+	}
+
+	public virtual void DeactivateOnEquipStatusEffects(Equipment equipment)
+	{
+		foreach (Enchantment enchantment in equipment.enchantments)
+		{
+			StatusEffectAsset currentStatusEffectAsset;
+
+			switch (equipment.equipmentType)
+			{
+			case EquipmentType.Weapon:
+				currentStatusEffectAsset = enchantment.weaponStatusEffect;
+				break;
+			case EquipmentType.Armor:
+				currentStatusEffectAsset = enchantment.armorStatusEffect;
+				break;
+			default:
+				Debug.LogError("Creature.ActivateOnEquipStatusEffects: UnknownEquipmentType " + equipment.equipmentType + ". Unable to unequip enchantment.");
+				return;
+			}
+				
+			if (currentStatusEffectAsset.activateOnEquip == true)
+			{
+				DestroyImmediate(this.gameObject.GetComponent(Type.GetType(currentStatusEffectAsset.statusEffectName)));
 			}
 		}
 	}
@@ -120,12 +143,12 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	{
 		if (weaponToEquip.equippableCreatureType == this.type)
 		{
-			this.ToggleEquipStatusEffects(this.activeWeapon, false);
+			this.DeactivateOnEquipStatusEffects(this.activeWeapon);
 
 			this.DropEquipment(this.activeWeapon);
 			this.activeWeapon = weaponToEquip;
 
-			this.ToggleEquipStatusEffects(this.activeWeapon, true);
+			this.ActivateOnEquipStatusEffects(this.activeWeapon);
 		}
 	}
 
@@ -133,12 +156,12 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	{
 		if (armorToEquip.equippableCreatureType == this.type)
 		{
-			this.ToggleEquipStatusEffects(this.activeArmor, false);
+			this.DeactivateOnEquipStatusEffects(this.activeArmor);
 
 			this.DropEquipment(this.activeArmor);
 			this.activeArmor = armorToEquip;
 
-			this.ToggleEquipStatusEffects(this.activeArmor, true);
+			this.ActivateOnEquipStatusEffects(this.activeArmor);
 		}
 	}
 

@@ -72,7 +72,6 @@ public class Player : Creature
 	{
 		this.currentCharacter = CharacterSelector.GetCharacterByType(PlayerCharacterType.Warrior);
 		this.SwapCharacter(this.currentCharacter);
-		this.moveSpeed = this.currentCharacter.moveSpeed;
 	}
 
 	// Update is called once per frame
@@ -120,14 +119,45 @@ public class Player : Creature
 		}
 	}
 
+	//Disable onEquip status effects completely
+	//Begin depleting inflicted status effects in the background
+	/*private void DisableAllActiveStatusEffects()
+	{
+		foreach (StatusEffect effect in this.currentCharacter.activeStatusEffects)
+		{
+			if (effect.activateOnEquip == true)
+			{
+				effect.StopStatusEffect();
+			}
+			else
+			{
+				effect.DepleteStatusEffect();
+			}
+		}
+	}*/
+
+	//Activate all onEquip status effects
+	//Continue applying inflicted status effects from their depleted state
+	private void ActivateAllActiveStatusEffects()
+	{
+		foreach (StatusEffect effect in this.currentCharacter.activeStatusEffects)
+		{
+			effect.ApplyStatusEffect(effect.level, this);
+		}
+	}
+
 	private void SwapCharacter(PlayerCharacter newCharacter)
 	{
 		this.moveSpeed = newCharacter.moveSpeed;
 		this.meshRenderer.material = newCharacter.characterMaterial;
+		this.DeactivateOnEquipStatusEffects(this.activeWeapon);
+		this.DeactivateOnEquipStatusEffects(this.activeArmor);
 		this.currentCharacter = newCharacter;
 
 		this.activeWeapon = this.currentCharacter.weapon;
 		this.activeArmor = this.currentCharacter.armor;
+		this.ActivateOnEquipStatusEffects(this.activeWeapon);
+		this.ActivateOnEquipStatusEffects(this.activeArmor);
 	}
 
 	public override void DisableMovement()
