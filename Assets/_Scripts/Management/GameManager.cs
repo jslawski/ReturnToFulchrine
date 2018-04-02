@@ -18,25 +18,25 @@ public class GameManager : MonoBehaviour {
 		warrior.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MediumWeaponsPath + "Sword");
 		warrior.armor = Resources.Load<Armor>(ScriptableObjectPaths.MediumArmorPath + "StuddedMail");
 		warrior.isDead = false;
-		warrior.activeStatusEffects = new List<StatusEffect>();
+		warrior.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Mage
 		PlayerCharacter mage = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Mage");
 		mage.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MagicWeaponsPath + "Staff");
 		mage.armor = Resources.Load<Armor>(ScriptableObjectPaths.MagicArmorPath + "Cloak");
 		mage.isDead = false;
-		mage.activeStatusEffects = new List<StatusEffect>();
+		mage.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Archer
 		PlayerCharacter archer = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Archer");
 		archer.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.LightWeaponsPath + "Bow");
 		archer.armor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + "Leather");
 		archer.isDead = false;
-		archer.activeStatusEffects = new List<StatusEffect>();
+		archer.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Tank
 		PlayerCharacter tank = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Tank");
 		tank.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.HeavyWeaponsPath + "Axe");
 		tank.armor = Resources.Load<Armor>(ScriptableObjectPaths.HeavyArmorPath + "ChainMail");
 		tank.isDead = false;
-		tank.activeStatusEffects = new List<StatusEffect>();
+		tank.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 	}
 
 	// Use this for initialization

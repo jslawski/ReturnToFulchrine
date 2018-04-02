@@ -8,6 +8,7 @@ public enum CreatureType { Magic, Light, Medium, Heavy, None };
 
 public abstract class Creature : MonoBehaviour, IDamageableObject 
 {
+	[HideInInspector]
 	public CreatureType type;
 
 	public float moveSpeed = 5;
@@ -83,59 +84,71 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		this.gameObject.transform.up = forwardVector;
 	}
 
-	public virtual void ActivateOnEquipStatusEffects(Equipment equipment)
+	public virtual void ActivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
-		Dictionary<string, int> enchantmentLevels = GameManager.GetEnchantmentLevelsOnEquipment(equipment);
+		List<AggregateStatusEffectMetaData> statusEffectMetaData = AggregateStatusEffectMetaData.GetAggregateStatusEffectMetaData(equipment);
 
-		foreach (Enchantment enchantment in equipment.enchantments)
+		foreach (AggregateStatusEffectMetaData metaData in statusEffectMetaData)
 		{
-			StatusEffectAsset currentStatusEffectAsset;
-			int enchantmentLevel = enchantmentLevels[enchantment.enchantmentName];;
-
-			switch (equipment.equipmentType)
+			if (metaData.statusEffect.activateOnEquip == true)
 			{
-			case EquipmentType.Weapon:
-				currentStatusEffectAsset = enchantment.weaponStatusEffect;
-				break;
-			case EquipmentType.Armor:
-				currentStatusEffectAsset = enchantment.armorStatusEffect;
-				break;
-			default:
-				Debug.LogError("Creature.ActivateOnEquipStatusEffects: UnknownEquipmentType " + equipment.equipmentType + ". Unable to unequip enchantment.");
-				return;
-			}
+				List<EquipStatusEffect> currentEquipStatusEffects = this.gameObject.GetComponents<EquipStatusEffect>().ToList();
+				EquipStatusEffect currentStatusEffect = currentEquipStatusEffects.Find(x => x.statusEffectName == metaData.statusEffect.statusEffectName);
 
-			if (currentStatusEffectAsset.activateOnEquip == true)
-			{
-				StatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType(currentStatusEffectAsset.statusEffectName)) as StatusEffect;
-				currentStatusEffect.ApplyStatusEffect(enchantmentLevel, this);
+				if (currentStatusEffect != null)
+				{
+					currentStatusEffect.level += metaData.aggregateLevel;
+					currentStatusEffect.UpdateStatusEffect();
+				}
+				else
+				{
+					currentStatusEffect = this.gameObject.AddComponent(Type.GetType(metaData.statusEffect.statusEffectName)) as EquipStatusEffect;
+					currentStatusEffect.equipmentType = equipment.equipmentType;
+					currentStatusEffect.level = metaData.aggregateLevel;
+					currentStatusEffect.statusEffectName = metaData.statusEffect.statusEffectName;
+					currentStatusEffect.ApplyStatusEffect(this);
+				}
 			}
 		}
 	}
 
-	public virtual void DeactivateOnEquipStatusEffects(Equipment equipment)
+	public virtual void DeactivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
-		foreach (Enchantment enchantment in equipment.enchantments)
-		{
-			StatusEffectAsset currentStatusEffectAsset;
+		List<AggregateStatusEffectMetaData> statusEffectMetaData = AggregateStatusEffectMetaData.GetAggregateStatusEffectMetaData(equipment);
+		List<EquipStatusEffect> currentEquipStatusEffects = this.gameObject.GetComponents<EquipStatusEffect>().ToList();
 
-			switch (equipment.equipmentType)
+		foreach (AggregateStatusEffectMetaData metaData in statusEffectMetaData)
+		{
+			if (metaData.statusEffect.activateOnEquip == true)
 			{
-			case EquipmentType.Weapon:
-				currentStatusEffectAsset = enchantment.weaponStatusEffect;
-				break;
-			case EquipmentType.Armor:
-				currentStatusEffectAsset = enchantment.armorStatusEffect;
-				break;
-			default:
-				Debug.LogError("Creature.ActivateOnEquipStatusEffects: UnknownEquipmentType " + equipment.equipmentType + ". Unable to unequip enchantment.");
-				return;
+				EquipStatusEffect currentStatusEffect = currentEquipStatusEffects.Find(x => x.statusEffectName == metaData.statusEffect.statusEffectName);
+				if (currentStatusEffect == null)
+				{
+					Debug.LogError("Creature.DeactivateEquipStatusEffectsForEquipment: Attempting to deactivate Status Effect " + metaData.statusEffect.statusEffectName + " but it is not currently active on the creature");
+					return;
+				}
+				currentStatusEffect.level -= metaData.aggregateLevel;
+				if (currentStatusEffect.level <= 0)
+				{
+					currentStatusEffect.StopStatusEffect();
+					Destroy(currentStatusEffect);
+				}
+				else
+				{
+					currentStatusEffect.UpdateStatusEffect();
+				}
 			}
-				
-			if (currentStatusEffectAsset.activateOnEquip == true)
-			{
-				DestroyImmediate(this.gameObject.GetComponent(Type.GetType(currentStatusEffectAsset.statusEffectName)));
-			}
+		}
+	}
+
+	public virtual void DeactivateAllEquipStatusEffects()
+	{
+		EquipStatusEffect[] allEquippedStatusEffects = this.gameObject.GetComponents<EquipStatusEffect>();
+
+		foreach (EquipStatusEffect currentStatusEffect in allEquippedStatusEffects)
+		{
+			currentStatusEffect.StopStatusEffect();
+			Destroy(currentStatusEffect);
 		}
 	}
 
@@ -143,12 +156,12 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	{
 		if (weaponToEquip.equippableCreatureType == this.type)
 		{
-			this.DeactivateOnEquipStatusEffects(this.activeWeapon);
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
 
 			this.DropEquipment(this.activeWeapon);
 			this.activeWeapon = weaponToEquip;
 
-			this.ActivateOnEquipStatusEffects(this.activeWeapon);
+			this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
 		}
 	}
 
@@ -156,12 +169,12 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	{
 		if (armorToEquip.equippableCreatureType == this.type)
 		{
-			this.DeactivateOnEquipStatusEffects(this.activeArmor);
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
 
 			this.DropEquipment(this.activeArmor);
 			this.activeArmor = armorToEquip;
 
-			this.ActivateOnEquipStatusEffects(this.activeArmor);
+			this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
 		}
 	}
 
@@ -173,6 +186,8 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 			return;
 		}
 			
+		this.DeactivateEquipStatusEffectsForEquipment(equipmentToDrop);
+
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:

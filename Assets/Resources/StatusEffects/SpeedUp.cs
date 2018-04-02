@@ -5,32 +5,35 @@ using UnityEngine;
 /// <summary>
 /// Granted StatusEffect.  Boosts creature's movement speed while equipped.
 /// </summary>
-public class SpeedUp : StatusEffect {
+public class SpeedUp : EquipStatusEffect {
 
 	private float originalMoveSpeed;
 	private float moveSpeedBuff;
 
-	public override void TryApplyStatusEffect(int enchantmentLevel, Creature affectedCreature)
+	public override void TryApplyStatusEffect(Creature affectedCreature)
 	{
-		this.ApplyStatusEffect(enchantmentLevel, affectedCreature);
+		this.ApplyStatusEffect(affectedCreature);
 	}
 
-	public override void ApplyStatusEffect(int enchantmentLevel, Creature affectedCreature)
+	public override void ApplyStatusEffect(Creature affectedCreature)
 	{
 		this.affectedCreature = affectedCreature;
 
 		this.originalMoveSpeed = affectedCreature.moveSpeed;
-		this.moveSpeedBuff = this.GetMoveSpeedBuff(enchantmentLevel);
-		Debug.LogError("Move Speed Buff: " + this.moveSpeedBuff);
-
-		this.level = enchantmentLevel;
+		this.moveSpeedBuff = this.GetMoveSpeedBuff();
 
 		this.ApplySpeedUp();
 	}
 
-	private float GetMoveSpeedBuff(int enchantmentLevel)
+	public override void UpdateStatusEffect()
 	{
-		switch (enchantmentLevel)
+		this.moveSpeedBuff = this.GetMoveSpeedBuff();
+		this.ApplySpeedUp();
+	}
+
+	private float GetMoveSpeedBuff()
+	{
+		switch (this.level)
 		{
 		case 1:
 			return 0.1f;
@@ -43,7 +46,7 @@ public class SpeedUp : StatusEffect {
 		case 5:
 			return 1.25f;
 		default:
-			Debug.LogError("SpeedUp.GetMoveSpeedBuff: Unknown enchantmentLevel " + enchantmentLevel + ". Unable to apply StatusEffect.");
+			Debug.LogError("SpeedUp.GetMoveSpeedBuff: Unknown enchantmentLevel " + this.level + ". Unable to apply StatusEffect.");
 			return 0f;
 		}
 	}
@@ -55,14 +58,7 @@ public class SpeedUp : StatusEffect {
 
 	public override void StopStatusEffect()
 	{
-		Debug.LogError("GONNA TRY TO REMOVE SPEED UP");
-
 		this.affectedCreature.moveSpeed = originalMoveSpeed;
-		Destroy(this/*this.gameObject.GetComponent<SpeedUp>()*/);
-	}
-
-	public override void ForceRemoveStatusEffect()
-	{
 		Destroy(this);
 	}
 }

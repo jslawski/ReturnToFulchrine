@@ -10,4 +10,6 @@ public abstract class Equipment : ScriptableObject
 	public EquipmentType equipmentType;
 
 	public List<Enchantment> enchantments;
+
+
 }

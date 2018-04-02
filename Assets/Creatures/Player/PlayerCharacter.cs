@@ -24,5 +24,5 @@ public class PlayerCharacter : ScriptableObject
 
 	public bool isDead = false;
 
-	public List<StatusEffect> activeStatusEffects;
+	public List<InflictedStatusEffect> activeInflictedStatusEffects;
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using InControl;
+using System;
 
 /// <summary>
 /// Handles all aspects of the player controlled avatar that is universal across all playable PlayerCharacters:
@@ -115,34 +116,35 @@ public class Player : Creature
 		{
 			this.DropEquipment(this.activeWeapon);
 			//this.DropEquipment(this.activeArmor);
-			//this.TakeDamage(150f);
+			//InflictedStatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType("Burn")) as InflictedStatusEffect;
+			//this.currentCharacter.activeInflictedStatusEffects.Add(currentStatusEffect);
+		}
+
+		//Debug.LogError("List Size: " + this.currentCharacter.activeInflictedStatusEffects.Count);
+	}
+
+	//Deactivate all EquipStatusEffects
+	//Begin depleting inflicted status effects in the background
+	private void DeactivateStatusEffects()
+	{
+		this.DeactivateAllEquipStatusEffects();
+
+		foreach (InflictedStatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
+		{
+			effect.DepleteStatusEffect();
 		}
 	}
 
-	//Disable onEquip status effects completely
-	//Begin depleting inflicted status effects in the background
-	/*private void DisableAllActiveStatusEffects()
+	//Activate characters equip status effects for their currentEquipment
+	//Re-apply inflicted status effects from their depleted state
+	private void ActivateStatusEffects()
 	{
-		foreach (StatusEffect effect in this.currentCharacter.activeStatusEffects)
-		{
-			if (effect.activateOnEquip == true)
-			{
-				effect.StopStatusEffect();
-			}
-			else
-			{
-				effect.DepleteStatusEffect();
-			}
-		}
-	}*/
+		this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
+		this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
 
-	//Activate all onEquip status effects
-	//Continue applying inflicted status effects from their depleted state
-	private void ActivateAllActiveStatusEffects()
-	{
-		foreach (StatusEffect effect in this.currentCharacter.activeStatusEffects)
+		foreach (StatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
 		{
-			effect.ApplyStatusEffect(effect.level, this);
+			effect.ApplyStatusEffect(this);
 		}
 	}
 
@@ -150,14 +152,13 @@ public class Player : Creature
 	{
 		this.moveSpeed = newCharacter.moveSpeed;
 		this.meshRenderer.material = newCharacter.characterMaterial;
-		this.DeactivateOnEquipStatusEffects(this.activeWeapon);
-		this.DeactivateOnEquipStatusEffects(this.activeArmor);
+		this.DeactivateStatusEffects();
+
 		this.currentCharacter = newCharacter;
 
 		this.activeWeapon = this.currentCharacter.weapon;
 		this.activeArmor = this.currentCharacter.armor;
-		this.ActivateOnEquipStatusEffects(this.activeWeapon);
-		this.ActivateOnEquipStatusEffects(this.activeArmor);
+		this.ActivateStatusEffects();
 	}
 
 	public override void DisableMovement()
@@ -197,7 +198,11 @@ public class Player : Creature
 	{
 		if (selectedCharacter == this.currentCharacter)
 		{
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
+
 			this.activeWeapon = selectedWeapon;
+
+			this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
 		}
 	}
 
@@ -205,7 +210,11 @@ public class Player : Creature
 	{
 		if (selectedCharacter == this.currentCharacter)
 		{
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
+
 			this.activeArmor = selectedArmor;
+
+			this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
 		}
 	}
 

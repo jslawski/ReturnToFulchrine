@@ -8,4 +8,6 @@ public class StatusEffectAsset : ScriptableObject
 	public bool activateOnEquip;
 
 	public string statusEffectName;
+
+	public int level;
 }

@@ -8,12 +8,14 @@ public abstract class StatusEffect : MonoBehaviour {
 	public float remainingDuration;
 	public int level;
 	public Creature affectedCreature;
+	public string statusEffectName;
 
-	public abstract void TryApplyStatusEffect(int enchantmentLevel, Creature affectedCreature);
-	public abstract void ApplyStatusEffect(int enchantmentLevel, Creature affectedCreature);
+	public virtual void TryApplyStatusEffect(Creature affectedCreature){}
+	public virtual void ApplyStatusEffect(Creature affectedCreature){}
 
 	public void DepleteStatusEffect()
 	{
+		this.StopAllCoroutines();
 		this.StartCoroutine(this.ConsumeStatusEffectTime());
 	}
 
@@ -30,10 +32,4 @@ public abstract class StatusEffect : MonoBehaviour {
 	{
 		this.StopAllCoroutines();
 	}
-
-	/// <summary>
-	/// Should only be used to remove status effects that are wrongfully put on a creature
-	/// before they take any effect
-	/// </summary>
-	public abstract void ForceRemoveStatusEffect();
 }
