@@ -26,6 +26,8 @@ public abstract class StatusEffect : MonoBehaviour {
 			this.remainingDuration -= Time.deltaTime;
 			yield return null;
 		}
+
+		this.StopStatusEffect();
 	}
 
 	public virtual void StopStatusEffect()

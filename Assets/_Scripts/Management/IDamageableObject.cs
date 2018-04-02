@@ -6,7 +6,7 @@ interface IDamageableObject {
 
 	float hitPoints { get; set; }
 
-	void TakeDamage(float damageDealt /*, Enchantments here too*/);
+	void TakeDamage(float damageDealt, bool rawDamage = false/*, Enchantments here too*/);
 
 	void GainHealth(float healthRestored);
 }

@@ -18,21 +18,28 @@ public class Burn : InflictedStatusEffect {
 		this.StopAllCoroutines();
 
 		this.affectedCreature = affectedCreature;
+
+		this.StartCoroutine(this.ApplyBurn());
 	}
 
 	private IEnumerator ApplyBurn()
 	{
 		while (this.remainingDuration > 0)
 		{
+			this.remainingDuration -= Time.deltaTime;
+
 			if (this.timeUntilNextInfliction > 0)
 			{
 				this.timeUntilNextInfliction -= Time.deltaTime;
+				yield return null;
 				continue;
 			}
 
-			affectedCreature.TakeDamage(this.level);
+			affectedCreature.TakeDamage(10, true);
 			this.timeUntilNextInfliction = timeBetweenInflictions;
 			yield return null;
 		}
+
+		this.StopStatusEffect();
 	}
 }

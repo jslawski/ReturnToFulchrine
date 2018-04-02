@@ -45,11 +45,19 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 
-	public virtual void TakeDamage(float damageDealt/*, Enchantments too*/)
+	public virtual void TakeDamage(float damageDealt, bool rawDamage = false/*, Enchantments too*/)
 	{
 		this.damageAnimator.enabled = true;
 
-		this.hitPoints -= this.CalculateDamage(damageDealt);
+		if (rawDamage == true)
+		{
+			this.hitPoints -= damageDealt;
+		}
+		else
+		{
+			this.hitPoints -= this.CalculateDamage(damageDealt);
+		}
+
 
 		return;
 	}

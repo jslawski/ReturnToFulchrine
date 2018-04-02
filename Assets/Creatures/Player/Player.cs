@@ -38,13 +38,6 @@ public class Player : Creature
 		}
 	}
 
-	public override void TakeDamage(float damageDealt/*, Enchantments too*/)
-	{
-		this.damageAnimator.enabled = true;
-
-		this.hitPoints -= this.CalculateDamage(damageDealt);
-	}
-
 	public override void GainHealth(float healthRestored)
 	{
 		if (this.hitPoints + healthRestored > PlayerHealthBarManager.totalMaxHitPoints)
@@ -114,10 +107,11 @@ public class Player : Creature
 
 		if (this.device.Action2.WasPressed)
 		{
-			this.DropEquipment(this.activeWeapon);
+			//this.DropEquipment(this.activeWeapon);
 			//this.DropEquipment(this.activeArmor);
-			//InflictedStatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType("Burn")) as InflictedStatusEffect;
-			//this.currentCharacter.activeInflictedStatusEffects.Add(currentStatusEffect);
+			InflictedStatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType("Burn")) as InflictedStatusEffect;
+			this.currentCharacter.activeInflictedStatusEffects.Add(currentStatusEffect);
+			currentStatusEffect.onInflicedStatusEffectEnded += this.currentCharacter.RemoveInflictedStatusEffect;
 		}
 
 		//Debug.LogError("List Size: " + this.currentCharacter.activeInflictedStatusEffects.Count);
@@ -142,7 +136,7 @@ public class Player : Creature
 		this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
 		this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
 
-		foreach (StatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
+		foreach (InflictedStatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
 		{
 			effect.ApplyStatusEffect(this);
 		}

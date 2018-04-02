@@ -25,4 +25,9 @@ public class PlayerCharacter : ScriptableObject
 	public bool isDead = false;
 
 	public List<InflictedStatusEffect> activeInflictedStatusEffects;
+
+	public void RemoveInflictedStatusEffect(InflictedStatusEffect statusEffect)
+	{
+		this.activeInflictedStatusEffects.Remove(statusEffect);
+	}
 }
