@@ -28,6 +28,7 @@ public class PlayerCharacter : ScriptableObject
 
 	public void RemoveInflictedStatusEffect(InflictedStatusEffect statusEffect)
 	{
+		statusEffect.onInflicedStatusEffectEnded -= this.RemoveInflictedStatusEffect;
 		this.activeInflictedStatusEffects.Remove(statusEffect);
 	}
 }

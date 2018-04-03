@@ -38,6 +38,30 @@ public class Player : Creature
 		}
 	}
 
+	public override void ApplyStatusEffects(Weapon weapon)
+	{
+		foreach (AggregateStatusEffectMetaData data in weapon.statusEffectMetaData)
+		{
+			if (data.statusEffect.activateOnEquip == false)
+			{
+				InflictedStatusEffect currentStatusEffect = this.gameObject.GetComponent(Type.GetType(data.statusEffect.statusEffectName)) as InflictedStatusEffect;
+
+				if (currentStatusEffect == null)
+				{
+					currentStatusEffect = this.gameObject.AddComponent(Type.GetType(data.statusEffect.statusEffectName)) as InflictedStatusEffect;
+					currentStatusEffect.level = data.aggregateLevel;
+					this.currentCharacter.activeInflictedStatusEffects.Add(currentStatusEffect);
+					currentStatusEffect.onInflicedStatusEffectEnded += this.currentCharacter.RemoveInflictedStatusEffect;
+				}
+				else
+				{
+					currentStatusEffect.level = data.aggregateLevel;
+					currentStatusEffect.AttemptStatusEffectRefresh(this);
+				}
+			}
+		}
+	}
+
 	public override void GainHealth(float healthRestored)
 	{
 		if (this.hitPoints + healthRestored > PlayerHealthBarManager.totalMaxHitPoints)
@@ -109,12 +133,8 @@ public class Player : Creature
 		{
 			//this.DropEquipment(this.activeWeapon);
 			//this.DropEquipment(this.activeArmor);
-			InflictedStatusEffect currentStatusEffect = this.gameObject.AddComponent(Type.GetType("Burn")) as InflictedStatusEffect;
-			this.currentCharacter.activeInflictedStatusEffects.Add(currentStatusEffect);
-			currentStatusEffect.onInflicedStatusEffectEnded += this.currentCharacter.RemoveInflictedStatusEffect;
+			this.ApplyStatusEffects(this.activeWeapon);
 		}
-
-		//Debug.LogError("List Size: " + this.currentCharacter.activeInflictedStatusEffects.Count);
 	}
 
 	//Deactivate all EquipStatusEffects
@@ -129,13 +149,9 @@ public class Player : Creature
 		}
 	}
 
-	//Activate characters equip status effects for their currentEquipment
 	//Re-apply inflicted status effects from their depleted state
-	private void ActivateStatusEffects()
+	private void ActivateInflictedStatusEffects()
 	{
-		this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
-		this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
-
 		foreach (InflictedStatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
 		{
 			effect.ApplyStatusEffect(this);
@@ -150,9 +166,10 @@ public class Player : Creature
 
 		this.currentCharacter = newCharacter;
 
-		this.activeWeapon = this.currentCharacter.weapon;
-		this.activeArmor = this.currentCharacter.armor;
-		this.ActivateStatusEffects();
+		this.SetActiveWeapon(this.currentCharacter.weapon);
+		this.SetActiveArmor(this.currentCharacter.armor);
+
+		this.ActivateInflictedStatusEffects();
 	}
 
 	public override void DisableMovement()
@@ -192,11 +209,7 @@ public class Player : Creature
 	{
 		if (selectedCharacter == this.currentCharacter)
 		{
-			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
-
-			this.activeWeapon = selectedWeapon;
-
-			this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
+			this.SetActiveWeapon(selectedWeapon);
 		}
 	}
 
@@ -204,11 +217,7 @@ public class Player : Creature
 	{
 		if (selectedCharacter == this.currentCharacter)
 		{
-			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
-
-			this.activeArmor = selectedArmor;
-
-			this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
+			this.SetActiveArmor(selectedArmor);
 		}
 	}
 

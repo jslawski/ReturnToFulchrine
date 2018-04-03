@@ -7,6 +7,10 @@ public abstract class InflictedStatusEffect : StatusEffect
 	public delegate void InflicedStatusEffectEnded(InflictedStatusEffect statusEffect);
 	public event InflicedStatusEffectEnded onInflicedStatusEffectEnded;
 
+	public abstract bool RollForInflictionChance();
+	public abstract void AttemptStatusEffectRefresh(Creature affectedCreature);
+
+
 	public void Start()
 	{
 		this.TryApplyStatusEffect(this.gameObject.GetComponent<Creature>());
@@ -21,4 +25,6 @@ public abstract class InflictedStatusEffect : StatusEffect
 
 		Destroy(this);
 	}
+
+
 }

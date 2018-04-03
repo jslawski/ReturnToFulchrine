@@ -23,7 +23,7 @@ public class AttackZone : MonoBehaviour, IDamageDealer {
 
 		if (victim != null)
 		{
-			victim.TakeDamage(controllingCreature.activeWeapon.damageOutput);
+			victim.TakeDamage(controllingCreature.activeWeapon.damageOutput, false, controllingCreature.activeWeapon);
 		}
 	}
 }

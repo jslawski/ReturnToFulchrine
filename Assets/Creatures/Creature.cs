@@ -45,7 +45,29 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 
-	public virtual void TakeDamage(float damageDealt, bool rawDamage = false/*, Enchantments too*/)
+	public virtual void ApplyStatusEffects(Weapon weapon)
+	{
+		foreach (AggregateStatusEffectMetaData data in weapon.statusEffectMetaData)
+		{
+			if (data.statusEffect.activateOnEquip == false)
+			{
+				InflictedStatusEffect currentStatusEffect = this.gameObject.GetComponent(Type.GetType(data.statusEffect.statusEffectName)) as InflictedStatusEffect;
+
+				if (currentStatusEffect == null)
+				{
+					currentStatusEffect = this.gameObject.AddComponent(Type.GetType(data.statusEffect.statusEffectName)) as InflictedStatusEffect;
+					currentStatusEffect.level = data.aggregateLevel;
+				}
+				else
+				{
+					currentStatusEffect.level = data.aggregateLevel;
+					currentStatusEffect.AttemptStatusEffectRefresh(this);
+				}
+			}
+		}
+	}
+
+	public virtual void TakeDamage(float damageDealt, bool rawDamage = false, Weapon weapon = null)
 	{
 		this.damageAnimator.enabled = true;
 
@@ -58,6 +80,10 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 			this.hitPoints -= this.CalculateDamage(damageDealt);
 		}
 
+		if (weapon != null)
+		{
+			this.ApplyStatusEffects(weapon);
+		}
 
 		return;
 	}
@@ -94,9 +120,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 	public virtual void ActivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
-		List<AggregateStatusEffectMetaData> statusEffectMetaData = AggregateStatusEffectMetaData.GetAggregateStatusEffectMetaData(equipment);
-
-		foreach (AggregateStatusEffectMetaData metaData in statusEffectMetaData)
+		foreach (AggregateStatusEffectMetaData metaData in equipment.statusEffectMetaData)
 		{
 			if (metaData.statusEffect.activateOnEquip == true)
 			{
@@ -122,10 +146,9 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 	public virtual void DeactivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
-		List<AggregateStatusEffectMetaData> statusEffectMetaData = AggregateStatusEffectMetaData.GetAggregateStatusEffectMetaData(equipment);
 		List<EquipStatusEffect> currentEquipStatusEffects = this.gameObject.GetComponents<EquipStatusEffect>().ToList();
 
-		foreach (AggregateStatusEffectMetaData metaData in statusEffectMetaData)
+		foreach (AggregateStatusEffectMetaData metaData in equipment.statusEffectMetaData)
 		{
 			if (metaData.statusEffect.activateOnEquip == true)
 			{
@@ -160,16 +183,36 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 
+	public virtual void SetActiveWeapon(Weapon weapon)
+	{
+		if (this.activeWeapon.statusEffectMetaData != null)
+		{
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
+		}
+
+		this.activeWeapon = weapon;
+		this.activeWeapon.RefreshAggregateStatusEffectMetaDataList();
+		this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
+	}
+
+	public virtual void SetActiveArmor(Armor armor)
+	{
+		if (this.activeArmor.statusEffectMetaData != null)
+		{
+			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
+		}
+
+		this.activeArmor = armor;
+		this.activeArmor.RefreshAggregateStatusEffectMetaDataList();
+		this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
+	}
+
 	public virtual void EquipWeapon(Weapon weaponToEquip)
 	{
 		if (weaponToEquip.equippableCreatureType == this.type)
 		{
-			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
-
 			this.DropEquipment(this.activeWeapon);
-			this.activeWeapon = weaponToEquip;
-
-			this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
+			this.SetActiveWeapon(weaponToEquip);
 		}
 	}
 
@@ -177,12 +220,8 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	{
 		if (armorToEquip.equippableCreatureType == this.type)
 		{
-			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
-
 			this.DropEquipment(this.activeArmor);
-			this.activeArmor = armorToEquip;
-
-			this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
+			this.SetActiveArmor(armorToEquip);
 		}
 	}
 
@@ -194,17 +233,15 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 			return;
 		}
 			
-		this.DeactivateEquipStatusEffectsForEquipment(equipmentToDrop);
-
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:
 			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, this.activeWeapon);
-			this.activeWeapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
+			this.SetActiveWeapon(Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed"));
 			break;
 		case EquipmentType.Armor:
 			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, this.activeArmor);
-			this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked");
+			this.SetActiveArmor(Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked"));
 			break;
 		default:
 			Debug.LogError("Creature.DropEquipment: Unknown EquipmentType: " + equipmentToDrop.equipmentType + ". Unable to drop equipment.");
@@ -226,8 +263,6 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	protected float CalculateDamage(float damageDealt /*, Enchantments*/)
 	{
 		float resultant = damageDealt - this.activeArmor.armorClass;
-
-		//Do Enchantment shenanigans here?  Bonus damage only.
 
 		if (resultant < 0)
 		{

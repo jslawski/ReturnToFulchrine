@@ -7,10 +7,33 @@ public class Burn : InflictedStatusEffect {
 	float timeUntilNextInfliction = 1f;
 	float timeBetweenInflictions = 1f;
 
+	public override bool RollForInflictionChance()
+	{
+		//Do some logic based on the level here
+		return true;
+	}
+
 	public override void TryApplyStatusEffect(Creature affectedCreature)
 	{
-		this.remainingDuration = 10f;
-		this.ApplyStatusEffect(affectedCreature);
+		if (this.RollForInflictionChance() == true)
+		{
+			this.remainingDuration = 10f;
+			this.ApplyStatusEffect(affectedCreature);
+		}
+		else
+		{
+			this.StopStatusEffect();
+		}
+	}
+
+	public override void AttemptStatusEffectRefresh(Creature affectedCreature)
+	{
+		if (this.RollForInflictionChance() == true)
+		{
+			this.StopAllCoroutines();
+			this.remainingDuration = 10f;
+			this.ApplyStatusEffect(affectedCreature);
+		}
 	}
 
 	public override void ApplyStatusEffect(Creature affectedCreature)

@@ -29,5 +29,4 @@ public class InteractableTriggerZone : MonoBehaviour {
 			this.onInteractableZoneExited(objectToRemove);
 		}
 	}
-
 }
