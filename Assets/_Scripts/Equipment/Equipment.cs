@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EquipmentType { Weapon, Armor, None };
+public enum Rarity { Common, Uncommon, Rare, Legendary };
 
 public abstract class Equipment : ScriptableObject
 {
+	public Rarity rarity;
+
 	public CreatureType equippableCreatureType;
 	public EquipmentType equipmentType;
 
 	public List<Enchantment> enchantments;
 	public List<AggregateStatusEffectMetaData> statusEffectMetaData;
 
-
-	//TODO: Move this implementation to Equipment, it makes more sense there.
 	private void UpdateList(StatusEffectAsset statusEffectAsset)
 	{
 		AggregateStatusEffectMetaData newData = this.statusEffectMetaData.Find(x => x.statusEffect.statusEffectName == statusEffectAsset.statusEffectName);

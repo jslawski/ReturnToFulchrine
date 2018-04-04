@@ -27,16 +27,16 @@ public class LootChest : InteractableObject {
 		switch (creatureType)
 		{
 		case CreatureType.Magic:
-			equipmentResourcePoolPath += ScriptableObjectPaths.MagicEquipmentType;
+			equipmentResourcePoolPath += ScriptableObjectPaths.MagicEquipmentDirectoryName;
 			break;
 		case CreatureType.Light:
-			equipmentResourcePoolPath += ScriptableObjectPaths.LightEquipmentType;
+			equipmentResourcePoolPath += ScriptableObjectPaths.LightEquipmentDirectoryName;
 			break;
 		case CreatureType.Medium:
-			equipmentResourcePoolPath += ScriptableObjectPaths.MediumEquipmentType;
+			equipmentResourcePoolPath += ScriptableObjectPaths.MediumEquipmentDirectoryName;
 			break;
 		case CreatureType.Heavy:
-			equipmentResourcePoolPath += ScriptableObjectPaths.HeavyEquipmentType;
+			equipmentResourcePoolPath += ScriptableObjectPaths.HeavyEquipmentDirectoryName;
 			break;
 		default:
 			Debug.LogError("LootChest.GetResourcePathName: Unknown CreatureType: " + creatureType + ". Unable to generate loot.");

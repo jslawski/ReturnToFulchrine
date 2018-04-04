@@ -3,22 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class ScriptableObjectPaths {
-	public const string MagicEquipmentType = "Magic/";
-	public const string LightEquipmentType = "Light/";
-	public const string MediumEquipmentType = "Medium/";
-	public const string HeavyEquipmentType = "Heavy/";
+	
+	public const string EquipmentDirectoryName = "Equipment/";
+	public const string WeaponsDirectoryName = "Weapons/";
+	public const string ArmorDirectoryName = "Armor/";
+	public const string MagicEquipmentDirectoryName = "Magic/";
+	public const string LightEquipmentDirectoryName = "Light/";
+	public const string MediumEquipmentDirectoryName = "Medium/";
+	public const string HeavyEquipmentDirectoryName = "Heavy/";
+	public const string CommonEquipmentDirectoryName = "Common/";
+	public const string UncommonEquipmentDirectoryName = "Uncommon/";
+	public const string RareEquipmentDirectoryName = "Rare/";
+	public const string LegendaryEquipmentDirectoryName = "Legendary/";
 
-	public const string EquipmentPath = "Equipment/";
-	public const string WeaponsPath = EquipmentPath + "Weapons/";
-	public const string MagicWeaponsPath = WeaponsPath + MagicEquipmentType;
-	public const string LightWeaponsPath = WeaponsPath + LightEquipmentType;
-	public const string MediumWeaponsPath = WeaponsPath + MediumEquipmentType;
-	public const string HeavyWeaponsPath = WeaponsPath + HeavyEquipmentType;
-	public const string ArmorPath = EquipmentPath + "Armor/";
-	public const string MagicArmorPath = ArmorPath + MagicEquipmentType;
-	public const string LightArmorPath = ArmorPath + LightEquipmentType;
-	public const string MediumArmorPath = ArmorPath + MediumEquipmentType;
-	public const string HeavyArmorPath = ArmorPath + HeavyEquipmentType;
+	public const string WeaponsPath = EquipmentDirectoryName + WeaponsDirectoryName;
+	public const string MagicWeaponsPath = WeaponsPath + MagicEquipmentDirectoryName;
+	public const string LightWeaponsPath = WeaponsPath + LightEquipmentDirectoryName;
+	public const string MediumWeaponsPath = WeaponsPath + MediumEquipmentDirectoryName;
+	public const string HeavyWeaponsPath = WeaponsPath + HeavyEquipmentDirectoryName;
+	public const string ArmorPath = EquipmentDirectoryName + ArmorDirectoryName;
+	public const string MagicArmorPath = ArmorPath + MagicEquipmentDirectoryName;
+	public const string LightArmorPath = ArmorPath + LightEquipmentDirectoryName;
+	public const string MediumArmorPath = ArmorPath + MediumEquipmentDirectoryName;
+	public const string HeavyArmorPath = ArmorPath + HeavyEquipmentDirectoryName;
 
 	public const string PlayerCharacterPath = "PlayerCharacters/";
 }
