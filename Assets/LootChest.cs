@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class LootChest : InteractableObject {
 
-	private string GetResourcePath(EquipmentType equipmentType, CreatureType creatureType)
+	private string GetResourcePath(EquipmentType equipmentType, CreatureType creatureType, Rarity rarity)
 	{
 		string equipmentResourcePoolPath = string.Empty;
 
@@ -43,7 +43,46 @@ public class LootChest : InteractableObject {
 			return string.Empty;
 		}
 
+		switch (rarity)
+		{
+		case Rarity.Common:
+			equipmentResourcePoolPath += ScriptableObjectPaths.CommonEquipmentDirectoryName;
+			break;
+		case Rarity.Uncommon:
+			equipmentResourcePoolPath += ScriptableObjectPaths.UncommonEquipmentDirectoryName;
+			break;
+		case Rarity.Rare:
+			equipmentResourcePoolPath += ScriptableObjectPaths.RareEquipmentDirectoryName;
+			break;
+		case Rarity.Legendary:
+			equipmentResourcePoolPath += ScriptableObjectPaths.LegendaryEquipmentDirectoryName;
+			break;
+		default:
+			Debug.LogError("LootChest.GenerateResourcePathName: Unknown Rarity: " + rarity + ". Unable to generate loot");
+			return string.Empty;
+		}
+
 		return equipmentResourcePoolPath;
+	}
+
+	protected virtual Rarity GetEquipmentRarity()
+	{
+		float rarityRoll = Random.Range(0.0f, 1.0f);
+
+		if (rarityRoll <= 0.05f)
+		{
+			return Rarity.Legendary;
+		}
+		else if (rarityRoll <= 0.20f)
+		{
+			return Rarity.Rare;
+		}
+		else if (rarityRoll <= 0.50f)
+		{
+			return Rarity.Uncommon;
+		}
+
+		return Rarity.Common;
 	}
 
 	protected virtual void GenerateLoot()
@@ -54,7 +93,10 @@ public class LootChest : InteractableObject {
 		//Roll for creature type
 		CreatureType creatureType =  (CreatureType)Random.Range(0, (int)CreatureType.None);
 
-		string resourcePath = this.GetResourcePath(lootType, creatureType);
+		//Roll for rarity
+		Rarity rarity = this.GetEquipmentRarity();
+
+		string resourcePath = this.GetResourcePath(lootType, creatureType, rarity);
 		if (resourcePath == string.Empty)
 		{
 			return;
@@ -65,12 +107,12 @@ public class LootChest : InteractableObject {
 		case EquipmentType.Weapon:
 			Weapon[] weapons = Resources.LoadAll<Weapon>(resourcePath);
 			Weapon chosenWeapon = weapons[Random.Range(0, weapons.Length)];
-			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, chosenWeapon);
+			GameManager.GenerateGrabbableWeapon(this.transform.position, chosenWeapon);
 			break;
 		case EquipmentType.Armor:
 			Armor[] armor = Resources.LoadAll<Armor>(resourcePath);
-			Armor chosenArmor = armor[Random.Range(0, armor.Length)];
-			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, chosenArmor);
+			Armor chosenArmor = armor[ Random.Range(0, armor.Length)];
+			GameManager.GenerateGrabbableArmor(this.transform.position, chosenArmor);
 			break;
 		default:
 			Debug.LogError("LootChest.GenerateLoot: Unknown EquipmentType: " + lootType + ". Unable to generate loot.");

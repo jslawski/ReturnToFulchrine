@@ -236,11 +236,11 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:
-			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, this.activeWeapon);
+			GameManager.GenerateGrabbableWeapon(this.transform.position, this.activeWeapon);
 			this.SetActiveWeapon(Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed"));
 			break;
 		case EquipmentType.Armor:
-			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, this.activeArmor);
+			GameManager.GenerateGrabbableArmor(this.transform.position, this.activeArmor);
 			this.SetActiveArmor(Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked"));
 			break;
 		default:

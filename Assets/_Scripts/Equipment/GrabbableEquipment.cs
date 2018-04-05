@@ -10,9 +10,12 @@ public abstract class GrabbableEquipment : InteractableObject {
 
 	private float instantiationLaunchMagnitude = 5f;
 
+	private MeshRenderer meshRenderer;
+
 	void Awake()
 	{
 		Invoke("ActivateCollider", this.activationTime);
+		this.meshRenderer = this.gameObject.GetComponent<MeshRenderer>();
 	}
 
 	private void ActivateCollider()
@@ -33,27 +36,28 @@ public abstract class GrabbableEquipment : InteractableObject {
 		}
 	}
 
-	public static void GenerateGrabbableWeapon(Vector3 instantiationPosition, Weapon weaponDetails)
+	public void UpdateEquipmentColor(Equipment equipment)
 	{
-		GameObject grabbableWeaponPrefab = Resources.Load<GameObject>("GrabbableWeapon");
-
-		GameObject instance = GameObject.Instantiate(grabbableWeaponPrefab, instantiationPosition, new Quaternion()) as GameObject;
-		GrabbableWeapon grabbableWeaponComponent = instance.GetComponent<GrabbableWeapon>();
-		grabbableWeaponComponent.weaponDetails = weaponDetails;
-
-		grabbableWeaponComponent.StartCoroutine("LaunchGrabbableEquipment");
+		switch (equipment.rarity)
+		{
+		case Rarity.Common:
+			this.meshRenderer.material = Resources.Load<Material>("EquipmentMaterials/Common");
+			break;
+		case Rarity.Uncommon:
+			this.meshRenderer.material = Resources.Load<Material>("EquipmentMaterials/Uncommon");
+			break;
+		case Rarity.Rare:
+			this.meshRenderer.material = Resources.Load<Material>("EquipmentMaterials/Rare");
+			break;
+		case Rarity.Legendary:
+			this.meshRenderer.material = Resources.Load<Material>("EquipmentMaterials/Legendary");
+			break;
+		default:
+			Debug.LogError("GrabbableEquipment.UpdateEquipmentColor: Unknown Rarity: " + equipment.rarity + ". Unable to change equipment color");
+			return;
+		}
 	}
-
-	public static void GenerateGrabbableArmor(Vector3 instantiationPosition, Armor armorDetails)
-	{
-		GameObject grabbableArmorPrefab = Resources.Load<GameObject>("GrabbableArmor");
-
-		GameObject instance = GameObject.Instantiate(grabbableArmorPrefab, instantiationPosition, new Quaternion()) as GameObject;
-		GrabbableArmor grabbableArmorComponent = instance.GetComponent<GrabbableArmor>();
-		grabbableArmorComponent.armorDetails = armorDetails;
-		grabbableArmorComponent.StartCoroutine("LaunchGrabbableEquipment");
-	}
-
+		
 	public override void Interact(Creature creature)
 	{
 		creature.RemoveInteractableObject(this);

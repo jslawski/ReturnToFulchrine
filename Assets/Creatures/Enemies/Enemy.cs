@@ -6,7 +6,7 @@ public class Enemy : Creature
 {
 	public void Start()
 	{
-		this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + "Leather");
+		this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Leather");
 		this.activeWeapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
 	}
 

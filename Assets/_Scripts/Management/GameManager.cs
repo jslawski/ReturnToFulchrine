@@ -15,26 +15,26 @@ public class GameManager : MonoBehaviour {
 		//Initalize Characters for the session
 		//Warrior
 		PlayerCharacter warrior = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath +  "Warrior");
-		warrior.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MediumWeaponsPath + "Sword");
-		warrior.armor = Resources.Load<Armor>(ScriptableObjectPaths.MediumArmorPath + "StuddedMail");
+		warrior.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MediumWeaponsPath + ScriptableObjectPaths.CommonEquipmentDirectoryName + "Sword");
+		warrior.armor = Resources.Load<Armor>(ScriptableObjectPaths.MediumArmorPath + ScriptableObjectPaths.RareEquipmentDirectoryName + "StuddedMail");
 		warrior.isDead = false;
 		warrior.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Mage
 		PlayerCharacter mage = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Mage");
-		mage.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MagicWeaponsPath + "Staff");
-		mage.armor = Resources.Load<Armor>(ScriptableObjectPaths.MagicArmorPath + "Cloak");
+		mage.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.MagicWeaponsPath + ScriptableObjectPaths.CommonEquipmentDirectoryName + "Staff");
+		mage.armor = Resources.Load<Armor>(ScriptableObjectPaths.MagicArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Cloak");
 		mage.isDead = false;
 		mage.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Archer
 		PlayerCharacter archer = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Archer");
-		archer.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.LightWeaponsPath + "Bow");
-		archer.armor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + "Leather");
+		archer.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.LightWeaponsPath + ScriptableObjectPaths.CommonEquipmentDirectoryName + "Bow");
+		archer.armor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Leather");
 		archer.isDead = false;
 		archer.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 		//Tank
 		PlayerCharacter tank = Resources.Load<PlayerCharacter>(ScriptableObjectPaths.PlayerCharacterPath + "Tank");
-		tank.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.HeavyWeaponsPath + "Axe");
-		tank.armor = Resources.Load<Armor>(ScriptableObjectPaths.HeavyArmorPath + "ChainMail");
+		tank.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.HeavyWeaponsPath + ScriptableObjectPaths.CommonEquipmentDirectoryName + "Axe");
+		tank.armor = Resources.Load<Armor>(ScriptableObjectPaths.HeavyArmorPath + ScriptableObjectPaths.CommonEquipmentDirectoryName + "ChainMail");
 		tank.isDead = false;
 		tank.activeInflictedStatusEffects = new List<InflictedStatusEffect>();
 	}
@@ -61,5 +61,31 @@ public class GameManager : MonoBehaviour {
 		}
 
 		return levelDictionary;
+	}
+
+	public static void GenerateGrabbableWeapon(Vector3 instantiationPosition, Weapon weaponDetails)
+	{
+		GameObject grabbableWeaponPrefab = Resources.Load<GameObject>("GrabbableWeapon");
+
+		GameObject instance = GameObject.Instantiate(grabbableWeaponPrefab, instantiationPosition, new Quaternion()) as GameObject;
+		GrabbableWeapon grabbableWeaponComponent = instance.GetComponent<GrabbableWeapon>();
+		grabbableWeaponComponent.weaponDetails = weaponDetails;
+
+		grabbableWeaponComponent.UpdateEquipmentColor(weaponDetails);
+
+		grabbableWeaponComponent.StartCoroutine("LaunchGrabbableEquipment");
+	}
+
+	public static void GenerateGrabbableArmor(Vector3 instantiationPosition, Armor armorDetails)
+	{
+		GameObject grabbableArmorPrefab = Resources.Load<GameObject>("GrabbableArmor");
+
+		GameObject instance = GameObject.Instantiate(grabbableArmorPrefab, instantiationPosition, new Quaternion()) as GameObject;
+		GrabbableArmor grabbableArmorComponent = instance.GetComponent<GrabbableArmor>();
+		grabbableArmorComponent.armorDetails = armorDetails;
+
+		grabbableArmorComponent.UpdateEquipmentColor(armorDetails);
+
+		grabbableArmorComponent.StartCoroutine("LaunchGrabbableEquipment");
 	}
 }

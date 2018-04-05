@@ -255,12 +255,12 @@ public class Player : Creature
 		switch (equipmentToDrop.equipmentType)
 		{
 		case EquipmentType.Weapon:
-			GrabbableEquipment.GenerateGrabbableWeapon(this.transform.position, selectedPlayerCharacter.weapon);
+			GameManager.GenerateGrabbableWeapon(this.transform.position, selectedPlayerCharacter.weapon);
 			selectedPlayerCharacter.weapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
 			this.SetActiveWeaponIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.weapon);
 			break;
 		case EquipmentType.Armor:
-			GrabbableEquipment.GenerateGrabbableArmor(this.transform.position, selectedPlayerCharacter.armor);
+			GameManager.GenerateGrabbableArmor(this.transform.position, selectedPlayerCharacter.armor);
 			selectedPlayerCharacter.armor = Resources.Load<Armor>(ScriptableObjectPaths.ArmorPath + "Naked");
 			this.SetActiveArmorIfCurrentCharacter(selectedPlayerCharacter, selectedPlayerCharacter.armor);
 			break;
