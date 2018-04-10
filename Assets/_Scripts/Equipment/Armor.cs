@@ -6,6 +6,4 @@ using UnityEngine;
 public class Armor : Equipment
 {
 	public float armorClass;
-
-	//Enchantments
 }

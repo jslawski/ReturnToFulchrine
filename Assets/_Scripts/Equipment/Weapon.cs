@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class Weapon : Equipment
 {
-	public float damageOutput;
-
 	public float windUpTime;
 	public float windDownTime;
 
@@ -14,8 +12,6 @@ public abstract class Weapon : Equipment
 
 	[HideInInspector]
 	public bool currentlyAttacking = false;
-
-	//public Enchantments of some sort
 
 	public abstract IEnumerator Attack(Creature wieldingCreature);
 }

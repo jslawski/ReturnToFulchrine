@@ -5,6 +5,13 @@ using UnityEngine;
 public enum EquipmentType { Weapon, Armor, None };
 public enum Rarity { Common, Uncommon, Rare, Legendary };
 
+[System.Serializable]
+public struct RangeValue 
+{
+	public float minValue;
+	public float maxValue;
+}
+
 public abstract class Equipment : ScriptableObject
 {
 	public Rarity rarity;
@@ -14,6 +21,17 @@ public abstract class Equipment : ScriptableObject
 
 	public List<Enchantment> enchantments;
 	public List<AggregateStatusEffectMetaData> statusEffectMetaData;
+
+	public RangeValue rangeValues;
+
+	//Gets a random value within the pre-determined range of values for this piece of equipment
+	public float GetRandomRangeValue()
+	{
+		float someValue = Mathf.Ceil(Random.Range(this.rangeValues.minValue, this.rangeValues.maxValue));
+
+		Debug.LogError("Damage Dealt: " + someValue);
+		return someValue;
+	}
 
 	private void UpdateList(StatusEffectAsset statusEffectAsset)
 	{

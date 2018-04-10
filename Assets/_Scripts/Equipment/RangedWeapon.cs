@@ -45,7 +45,7 @@ public class RangedWeapon : Weapon
 				launchDirection = this.GetAimAssistDirection(wieldingCreature);
 			}
 
-			currentProjectile.Launch(launchDirection, this.projectileVelocity, this.damageOutput, this.projectileLifetime);
+			currentProjectile.Launch(launchDirection, this.projectileVelocity, this.GetRandomRangeValue(), this.projectileLifetime);
 
 			yield return new WaitForSeconds(this.windDownTime);
 		}

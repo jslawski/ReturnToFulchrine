@@ -23,7 +23,9 @@ public class AttackZone : MonoBehaviour, IDamageDealer {
 
 		if (victim != null)
 		{
-			victim.TakeDamage(controllingCreature.activeWeapon.damageOutput, false, controllingCreature.activeWeapon);
+			float damageOutput = controllingCreature.activeWeapon.GetRandomRangeValue();
+
+			victim.TakeDamage(damageOutput, false, controllingCreature.activeWeapon);
 		}
 	}
 }
