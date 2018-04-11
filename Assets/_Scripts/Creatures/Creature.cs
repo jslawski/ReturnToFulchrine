@@ -281,8 +281,10 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 			foreach (InteractableObject currentObject in this.interactableObjectsInRange)
 			{
 				currentObject.distanceFromCreature = Vector3.Distance(this.transform.position, currentObject.transform.position);
+				currentObject.infoPanel.SetActive(false);
 			}
 			this.sortedInteractableObjects = this.interactableObjectsInRange.OrderBy(i => i.distanceFromCreature);
+			this.sortedInteractableObjects.First().infoPanel.SetActive(true);
 
 			yield return null;
 		}
@@ -303,6 +305,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 
 	public void RemoveInteractableObject(InteractableObject objectToRemove)
 	{
+		objectToRemove.infoPanel.SetActive(false);
 		this.interactableObjectsInRange.Remove(objectToRemove);
 	}
 

@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour {
 		grabbableWeaponComponent.weaponDetails = weaponDetails;
 
 		grabbableWeaponComponent.UpdateEquipmentColor(weaponDetails);
+		grabbableWeaponComponent.UpdateInfoText(weaponDetails);
 
 		grabbableWeaponComponent.StartCoroutine("LaunchGrabbableEquipment");
 	}
@@ -85,6 +86,7 @@ public class GameManager : MonoBehaviour {
 		grabbableArmorComponent.armorDetails = armorDetails;
 
 		grabbableArmorComponent.UpdateEquipmentColor(armorDetails);
+		grabbableArmorComponent.UpdateInfoText(armorDetails);
 
 		grabbableArmorComponent.StartCoroutine("LaunchGrabbableEquipment");
 	}

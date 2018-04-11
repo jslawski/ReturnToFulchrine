@@ -6,8 +6,6 @@ public class GrabbableWeapon : GrabbableEquipment {
 
 	public Weapon weaponDetails;
 
-	private MeshRenderer meshRenderer;
-
 	public override void Interact(Creature creature)
 	{
 		creature.EquipWeapon(this.weaponDetails);

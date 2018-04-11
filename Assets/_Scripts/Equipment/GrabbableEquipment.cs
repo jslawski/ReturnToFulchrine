@@ -1,26 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using PolarCoordinates;
 
-public abstract class GrabbableEquipment : InteractableObject {
-
-	private float activationTime = 0.5f;
-
+public abstract class GrabbableEquipment : InteractableObject
+{
 	private float instantiationLaunchMagnitude = 5f;
 
 	private MeshRenderer meshRenderer;
 
 	void Awake()
 	{
-		Invoke("ActivateCollider", this.activationTime);
 		this.meshRenderer = this.gameObject.GetComponent<MeshRenderer>();
-	}
-
-	private void ActivateCollider()
-	{
-		this.gameObject.GetComponent<BoxCollider>().enabled = true;
 	}
 
 	public IEnumerator LaunchGrabbableEquipment()
@@ -57,7 +50,13 @@ public abstract class GrabbableEquipment : InteractableObject {
 			return;
 		}
 	}
-		
+
+	public virtual void UpdateInfoText(Equipment equipment)
+	{
+		Text equipmentName = this.infoPanel.GetComponentInChildren<Text>();
+		equipmentName.text = equipment.name;
+	}
+
 	public override void Interact(Creature creature)
 	{
 		creature.RemoveInteractableObject(this);
