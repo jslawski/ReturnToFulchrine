@@ -6,7 +6,7 @@ using UnityEngine;
 public class MeleeWeapon : Weapon
 {
 	//Melee Weapon Exclusives
-	public float swingTime = 1f;
+	public int swingFrames = 1;
 	public Vector2 attackZoneDimensions;
 
 	public void PositionWeapon(Creature wieldingCreature)
@@ -23,15 +23,30 @@ public class MeleeWeapon : Weapon
 		this.PositionWeapon(wieldingCreature);
 		wieldingCreature.DisableMovement();
 
-		yield return new WaitForSeconds(this.windUpTime);
+		int currentNumFrames = this.windUpFrames;
+		while (currentNumFrames > 0)
+		{
+			currentNumFrames--;
+			yield return new WaitForFixedUpdate();
+		}
 
 		wieldingCreature.attackZone.SetActive(true);
 
-		yield return new WaitForSeconds(this.swingTime);
+		currentNumFrames = this.swingFrames;
+		while (currentNumFrames > 0)
+		{
+			currentNumFrames--;
+			yield return new WaitForFixedUpdate();
+		}
 
 		wieldingCreature.attackZone.SetActive(false);
 
-		yield return new WaitForSeconds(this.windDownTime);
+		currentNumFrames = this.windDownFrames;
+		while (currentNumFrames > 0)
+		{
+			currentNumFrames--;
+			yield return new WaitForFixedUpdate();
+		}
 
 		wieldingCreature.EnableMovement();
 	}

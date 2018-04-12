@@ -33,7 +33,12 @@ public class RangedWeapon : Weapon
 		//Repeatedly fire until player lets go of the attack button
 		while (this.continueAttacking == true)
 		{
-			yield return new WaitForSeconds(this.windUpTime);
+			int currentNumFrames = this.windUpFrames;
+			while (currentNumFrames > 0)
+			{
+				currentNumFrames--;
+				yield return new WaitForFixedUpdate();
+			}
 
 			GameObject currentProjectileObject = GameObject.Instantiate(this.rangedProjectilePrefab, wieldingCreature.transform.position, new Quaternion()) as GameObject;
 			RangedProjectile currentProjectile = currentProjectileObject.GetComponent<RangedProjectile>();
@@ -47,7 +52,12 @@ public class RangedWeapon : Weapon
 
 			currentProjectile.Launch(launchDirection, this.projectileVelocity, this.GetRandomRangeValue(), this.projectileLifetime);
 
-			yield return new WaitForSeconds(this.windDownTime);
+			currentNumFrames = this.windDownFrames;
+			while (currentNumFrames > 0)
+			{
+				currentNumFrames--;
+				yield return new WaitForFixedUpdate();
+			}
 		}
 
 		this.currentlyAttacking = false;

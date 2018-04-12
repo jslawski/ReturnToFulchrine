@@ -4,8 +4,8 @@ using UnityEngine;
 
 public abstract class Weapon : Equipment
 {
-	public float windUpTime;
-	public float windDownTime;
+	public int windUpFrames;
+	public int windDownFrames;
 
 	[HideInInspector]
 	public bool continueAttacking = false;
