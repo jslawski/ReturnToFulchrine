@@ -33,7 +33,7 @@ public abstract class Equipment : ScriptableObject
 		return someValue;
 	}
 
-	private void UpdateList(StatusEffectAsset statusEffectAsset)
+	private void UpdateStatusEffectList(StatusEffectAsset statusEffectAsset)
 	{
 		AggregateStatusEffectMetaData newData = this.statusEffectMetaData.Find(x => x.statusEffect.statusEffectName == statusEffectAsset.statusEffectName);
 
@@ -56,10 +56,10 @@ public abstract class Equipment : ScriptableObject
 			switch (this.equipmentType)
 			{
 			case EquipmentType.Weapon:
-				this.UpdateList(currentEnchantment.weaponStatusEffect);
+				this.UpdateStatusEffectList(currentEnchantment.weaponStatusEffect);
 				break;
 			case EquipmentType.Armor:
-				this.UpdateList(currentEnchantment.armorStatusEffect);
+				this.UpdateStatusEffectList(currentEnchantment.armorStatusEffect);
 				break;
 			default:
 				Debug.LogError("Equipment.RefreshAggregateStatusEffectMetaDataList: Unknown EquipmentType: " + this.equipmentType + ". Unable to get aggregate status effect meta data.");
@@ -67,4 +67,6 @@ public abstract class Equipment : ScriptableObject
 			}
 		}
 	}
+
+	public abstract void RefreshAggregateMetaData();
 }

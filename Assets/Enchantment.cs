@@ -8,5 +8,7 @@ public class Enchantment : ScriptableObject {
 	public string enchantmentName;
 
 	public StatusEffectAsset weaponStatusEffect;
+	public Affinity attackAffinity;
 	public StatusEffectAsset armorStatusEffect;
+	public Affinity defenseAffinity;
 }

@@ -191,7 +191,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 
 		this.activeWeapon = weapon;
-		this.activeWeapon.RefreshAggregateStatusEffectMetaDataList();
+		this.activeWeapon.RefreshAggregateMetaData();
 		this.ActivateEquipStatusEffectsForEquipment(this.activeWeapon);
 	}
 
@@ -203,7 +203,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 
 		this.activeArmor = armor;
-		this.activeArmor.RefreshAggregateStatusEffectMetaDataList();
+		this.activeArmor.RefreshAggregateMetaData();
 		this.ActivateEquipStatusEffectsForEquipment(this.activeArmor);
 	}
 
