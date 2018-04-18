@@ -29,7 +29,6 @@ public abstract class Equipment : ScriptableObject
 	{
 		float someValue = Mathf.Ceil(Random.Range(this.rangeValues.minValue, this.rangeValues.maxValue));
 
-		Debug.LogError("Damage Dealt: " + someValue);
 		return someValue;
 	}
 

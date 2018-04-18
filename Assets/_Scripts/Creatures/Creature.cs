@@ -77,13 +77,15 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 		else
 		{
-			this.hitPoints -= this.CalculateDamage(damageDealt);
+			this.hitPoints -= this.CalculateDamage(damageDealt, weapon.attackAffinityMetaData);
 		}
 
 		if (weapon != null)
 		{
 			this.ApplyStatusEffects(weapon);
 		}
+
+		Debug.LogError("Remaining HP: " + this.hitPoints);
 
 		return;
 	}
@@ -100,6 +102,32 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 	#endregion
+
+	protected float CalculateDamage(float damageDealt, List<AggregateAffinityMetaData> attackAffinityMetaData)
+	{
+		float resultant = damageDealt - this.activeArmor.armorClass;
+
+		if (resultant < 0)
+		{
+			resultant = 0;
+		}
+
+		Debug.LogError("Base Damage Dealt: " + resultant);
+
+		//Apply all affinity bonus damage
+		foreach (AggregateAffinityMetaData metaData in attackAffinityMetaData)
+		{
+			float affinityDamage = metaData.affinityAsset.GetAffinityDamage(metaData.aggregateLevel);
+			Debug.LogError("Original Affinity Damage: " + affinityDamage);
+			float modifiedAffinityDamage =  Mathf.Ceil(affinityDamage * this.activeArmor.GetDefenseAffinityMultiplier(metaData));
+			Debug.LogError("Modified Affinity Damage: " + modifiedAffinityDamage);
+			resultant += modifiedAffinityDamage;
+		}
+
+		Debug.LogError("Total Damage Dealt: " + resultant);
+
+		return resultant;
+	}
 
 	public virtual void Awake()
 	{
@@ -260,17 +288,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	public abstract void LockToRotation();
 	public abstract void Attack();
 
-	protected float CalculateDamage(float damageDealt /*, Enchantments*/)
-	{
-		float resultant = damageDealt - this.activeArmor.armorClass;
 
-		if (resultant < 0)
-		{
-			resultant = 0;
-		}
-
-		return resultant;
-	}
 
 	#region InteractableObject handling
 	protected IEnumerator HandleInteractableObjects()

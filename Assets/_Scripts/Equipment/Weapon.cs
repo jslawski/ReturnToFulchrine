@@ -30,11 +30,16 @@ public abstract class Weapon : Equipment
 
 		foreach (Enchantment currentEnchantment in this.enchantments)
 		{
-			AggregateAffinityMetaData newData = this.attackAffinityMetaData.Find(x => x.affinityType == currentEnchantment.attackAffinity.type);
+			if (currentEnchantment.attackAffinity == null)
+			{
+				continue;
+			}
+				
+			AggregateAffinityMetaData newData = this.attackAffinityMetaData.Find(x => x.affinityAsset.type == currentEnchantment.attackAffinity.type);
 
 			if (newData == null)
 			{
-				this.attackAffinityMetaData.Add(new AggregateAffinityMetaData(currentEnchantment.attackAffinity.type, currentEnchantment.attackAffinity.level));
+				this.attackAffinityMetaData.Add(new AggregateAffinityMetaData(currentEnchantment.attackAffinity, currentEnchantment.attackAffinity.level));
 			}
 			else
 			{

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public enum AffinityType { Fire, Ice, Electric, None };
 
+/// <summary>
+/// Affinities define an equipment's elemental "type."  Each Affinity has strengths and weaknesses when defending against other Affinity types.
+/// A weapon with an Affinity will deal additional damage in the type of that Affinity.
+/// A piece of armor with an Affinity will potentially contribute to a multiplier to increase or decrease the amount of affinity damage taken.
+/// 
+/// Attach Affinities to Enchantments in order to give that Enchantment a type that it can impart on a piece of Equipment.
+/// </summary>
 [CreateAssetMenu(fileName = "New Affinity", menuName = "Affinity")]
 public class Affinity : ScriptableObject {
 
@@ -11,9 +18,9 @@ public class Affinity : ScriptableObject {
 
 	public int level;
 
-	public List<AffinityType> advantageAffinities;
+	public List<AffinityType> defenseAdvantageAffinities;
 
-	public List<AffinityType> disadvantageAffinities;
+	public List<AffinityType> defenseDisadvantageAffinities;
 
 	public float GetAffinityDamage(int affinityLevel)
 	{
@@ -33,10 +40,5 @@ public class Affinity : ScriptableObject {
 			Debug.LogError("Affinity.GetAffinityDamage: Unknown affinityLevel: " + affinityLevel + ". Unable to add additional affinity damage.");
 			return 0;
 		}
-	}
-
-	public float ApplyDefenseAffinity(Affinity attackAffinity, float affinityDamage)
-	{
-		return 0;	
 	}
 }

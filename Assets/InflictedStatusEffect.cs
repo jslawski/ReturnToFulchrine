@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// InflictedStatusEffects only last for a set duration, and are actively attached to victims as a component
+/// When the duration expires, the component is removed.
+/// </summary>
 public abstract class InflictedStatusEffect : StatusEffect 
 {
 	public delegate void InflicedStatusEffectEnded(InflictedStatusEffect statusEffect);

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// If a piece of equipment has multiple enchantments that reference the same status effects,
-/// this class will be responsible for consolidating that information into a list of status effect
-/// metadata that aggregates repeated status effects to have one, combined level
+/// If a piece of Equipment has multiple Enchantments that reference the same StatusEffects,
+/// or multiple pieces of Equipment contain Enchantments with the same StatusEffects,
+/// this class will be responsible for consolidating that information into
+///  metadata that aggregates repeated status effects to have one, combined level
 /// </summary>
 public class AggregateStatusEffectMetaData 
 {

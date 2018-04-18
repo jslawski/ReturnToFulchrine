@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+/// <summary>
+/// A status effect is a lasting effect on a creature, either for a period of time (InflictedStatusEffect) or for the duration 
+/// that they have a piece of equipment equipped (EquipStatusEffect).  This class defines the components that will be attached
+/// to a Creature in order to impart its effects.
+/// </summary>
 public abstract class StatusEffect : MonoBehaviour {
 
 	public float remainingDuration;

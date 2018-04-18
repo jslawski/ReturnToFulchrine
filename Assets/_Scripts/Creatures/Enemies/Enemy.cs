@@ -6,8 +6,9 @@ public class Enemy : Creature
 {
 	public void Start()
 	{
-		this.activeArmor = Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Leather");
-		this.activeWeapon = Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed");
+		this.SetActiveArmor(Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Leather"));
+		this.SetActiveWeapon(Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed"));
+		this.hitPoints = this.totalHitPoints;
 	}
 
 	public override void DisableMovement(){}
