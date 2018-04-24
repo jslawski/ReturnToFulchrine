@@ -6,12 +6,10 @@ using System;
 
 public enum CreatureType { Magic, Light, Medium, Heavy, None };
 
-public abstract class Creature : MonoBehaviour, IDamageableObject 
+public abstract class Creature : MoveableObject, IDamageableObject 
 {
 	[HideInInspector]
 	public CreatureType type;
-
-	public float moveSpeed = 5;
 
 	public GameObject attackZone;
 	public float attackStartPointY = 0.5f;
@@ -28,6 +26,8 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	private InteractableTriggerZone interactableTriggerZone;
 	protected List<InteractableObject> interactableObjectsInRange;
 	private IOrderedEnumerable<InteractableObject> sortedInteractableObjects;
+
+
 
 	#region IDamageableObject implementation
 	protected float _hitPoints = 100f;
@@ -77,7 +77,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 		else
 		{
-			this.hitPoints -= this.CalculateDamage(damageDealt, weapon.attackAffinityMetaData);
+			this.hitPoints -= this.CalculateDamage(damageDealt, weapon.critChance, weapon.attackAffinityMetaData);
 		}
 
 		if (weapon != null)
@@ -103,8 +103,19 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 	}
 	#endregion
 
-	protected float CalculateDamage(float damageDealt, List<AggregateAffinityMetaData> attackAffinityMetaData)
+	protected float CalculateDamage(float damageDealt, float critChance, List<AggregateAffinityMetaData> attackAffinityMetaData)
 	{
+		Debug.LogError("Initial Damage: " + damageDealt);
+
+		float critRoll = UnityEngine.Random.Range(0f, 1f);
+		bool criticalHit = false;
+		if (critRoll <= critChance)
+		{
+			Debug.LogError("CRITICAL HIT!");
+			criticalHit = true;
+			damageDealt *= 2f;
+		}
+
 		float resultant = damageDealt - this.activeArmor.armorClass;
 
 		if (resultant < 0)
@@ -118,6 +129,11 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		foreach (AggregateAffinityMetaData metaData in attackAffinityMetaData)
 		{
 			float affinityDamage = metaData.affinityAsset.GetAffinityDamage(metaData.aggregateLevel);
+			if (criticalHit == true)
+			{
+				affinityDamage *= 2f;
+			}
+
 			Debug.LogError("Original Affinity Damage: " + affinityDamage);
 			float modifiedAffinityDamage =  Mathf.Ceil(affinityDamage * this.activeArmor.GetDefenseAffinityMultiplier(metaData));
 			Debug.LogError("Modified Affinity Damage: " + modifiedAffinityDamage);
@@ -136,15 +152,7 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		this.interactableTriggerZone.onInteractableZoneExited += this.RemoveInteractableObject;
 	}
 
-	public void Move(Vector2 moveVector)
-	{
-		this.gameObject.transform.Translate(moveVector * Time.deltaTime * this.moveSpeed, Space.World);
-	}
 
-	public void Rotate(Vector2 forwardVector)
-	{
-		this.gameObject.transform.up = forwardVector;
-	}
 
 	public virtual void ActivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
@@ -336,4 +344,6 @@ public abstract class Creature : MonoBehaviour, IDamageableObject
 		}
 	}
 	#endregion
+
+
 }

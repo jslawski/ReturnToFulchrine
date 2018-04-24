@@ -94,14 +94,22 @@ public class Player : Creature
 
 	// Update is called once per frame
 	private void Update () {
-		if (this.currentControls.movementControl != null && this.currentControls.movementControl.Vector.magnitude > 0)
+		if (this.currentControls.movementControl != null)
 		{
-			this.Move(this.currentControls.movementControl.Vector);
+			this.velocity = this.currentControls.movementControl.Vector;
+		}
+		else
+		{
+			this.velocity = Vector2.zero;
 		}
 
-		if (this.currentControls.rotateControl != null && this.currentControls.rotateControl.Vector.magnitude > 0)
+		if (this.currentControls.rotateControl != null)
 		{
-			this.Rotate(this.currentControls.rotateControl.Vector);
+			this.rotateDirection = this.currentControls.rotateControl.Vector;
+		}
+		else
+		{
+			this.rotateDirection = Vector2.zero;
 		}
 
 		if (this.currentControls.characterSelectLeft != null && this.currentControls.characterSelectRight.WasPressed)

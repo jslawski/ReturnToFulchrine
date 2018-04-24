@@ -4,17 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class FileModificationWarning : MonoBehaviour
+public class EquipmentOrganizer : MonoBehaviour
 {
 	[MenuItem("Equipment Organizer/Organize Equipment")]
 	private static void OrganizeEquipment()
 	{
-		Equipment[] allEquipment = Resources.LoadAll<Equipment>(ScriptableObjectPaths.EquipmentDirectoryName);
+		Equipment[] allEquipment = Resources.LoadAll<Equipment>(ScriptableObjectPaths.EquipmentPath);
 	
 		foreach (Equipment currentEquipment in allEquipment)
 		{
 			string oldPath = AssetDatabase.GetAssetPath(currentEquipment.GetInstanceID());
-			string destinationPath = "Assets/Resources/" + ScriptableObjectPaths.EquipmentDirectoryName;
+			string destinationPath = "Assets/Resources/" + ScriptableObjectPaths.EquipmentPath;
 
 			switch (currentEquipment.equipmentType)
 			{
