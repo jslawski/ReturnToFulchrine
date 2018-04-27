@@ -15,7 +15,8 @@ public class MoveableObject : MonoBehaviour {
 	protected Vector2 velocity = Vector3.zero;
 	protected Vector2 rotateDirection = Vector3.zero;
 
-	public float moveSpeed = 5;
+	public float moveSpeed = 0f;
+	public float moveSpeedBonus = 0f;
 
 	protected void FixedUpdate()
 	{
@@ -31,7 +32,7 @@ public class MoveableObject : MonoBehaviour {
 
 	public void Move()
 	{
-		this.gameObject.transform.Translate(velocity * Time.deltaTime * this.moveSpeed, Space.World);
+		this.gameObject.transform.Translate(velocity * Time.deltaTime * (this.moveSpeed + this.moveSpeedBonus), Space.World);
 	}
 
 	public void Rotate()

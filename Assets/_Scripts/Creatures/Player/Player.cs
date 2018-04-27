@@ -145,12 +145,9 @@ public class Player : Creature
 		}
 	}
 
-	//Deactivate all EquipStatusEffects
 	//Begin depleting inflicted status effects in the background
-	private void DeactivateStatusEffects()
+	private void DepleteInflictedStatusEffects()
 	{
-		this.DeactivateAllEquipStatusEffects();
-
 		foreach (InflictedStatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
 		{
 			effect.DepleteStatusEffect();
@@ -168,11 +165,11 @@ public class Player : Creature
 
 	private void SwapCharacter(PlayerCharacter newCharacter)
 	{
-		this.moveSpeed = newCharacter.moveSpeed;
-		this.meshRenderer.material = newCharacter.characterMaterial;
-		this.DeactivateStatusEffects();
+		this.DepleteInflictedStatusEffects();
 
 		this.currentCharacter = newCharacter;
+		this.meshRenderer.material = this.currentCharacter.characterMaterial;
+		this.moveSpeed = this.currentCharacter.moveSpeed;
 
 		this.SetActiveWeapon(this.currentCharacter.weapon);
 		this.SetActiveArmor(this.currentCharacter.armor);

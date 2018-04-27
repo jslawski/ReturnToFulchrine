@@ -12,7 +12,7 @@ public class PlayerCharacter : ScriptableObject
 {
 	public PlayerCharacterType type;
 
-	public float moveSpeed = 5f;
+	public float moveSpeed;
 
 	public Material characterMaterial;
 

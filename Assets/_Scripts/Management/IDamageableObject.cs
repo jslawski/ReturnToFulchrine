@@ -8,6 +8,8 @@ interface IDamageableObject {
 
 	void TakeDamage(float damageDealt, bool rawDamage = false, Weapon weapon = null);
 
+	void Knockback(Vector3 knockbackDirection, float knockbackDistance);
+
 	void ApplyStatusEffects(Weapon weapon);
 
 	void GainHealth(float healthRestored);

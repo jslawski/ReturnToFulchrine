@@ -5,6 +5,8 @@ using UnityEngine;
 public abstract class Weapon : Equipment
 {
 	public float critChance = 0.5f;
+	public float knockbackChance = 0.5f;
+	public float knockbackDistance = 5f;
 	public int windUpFrames;
 	public int windDownFrames;
 

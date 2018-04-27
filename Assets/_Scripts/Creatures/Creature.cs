@@ -90,6 +90,25 @@ public abstract class Creature : MoveableObject, IDamageableObject
 		return;
 	}
 
+	public virtual void Knockback(Vector3 knockbackDirection, float knockbackDistance)
+	{
+		this.StartCoroutine(this.KnockbackCoroutine(knockbackDirection, knockbackDistance));
+	}
+
+	private IEnumerator KnockbackCoroutine(Vector3 knockbackDirection, float knockbackDistance)
+	{
+		float cumulativeDistanceTravelled = 0f;
+
+		while (cumulativeDistanceTravelled < knockbackDistance)
+		{
+			this.velocity = knockbackDirection.normalized;
+			cumulativeDistanceTravelled += 1f;
+			yield return new WaitForEndOfFrame();
+		}
+
+		this.velocity = Vector3.zero;
+	}
+
 	public virtual void GainHealth(float healthRestored)
 	{
 		if (this.hitPoints + healthRestored > this.totalHitPoints)

@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class SpeedUp : EquipStatusEffect {
 
-	private float originalMoveSpeed;
 	private float moveSpeedBuff;
 
 	public override void TryApplyStatusEffect(Creature affectedCreature)
@@ -19,7 +18,6 @@ public class SpeedUp : EquipStatusEffect {
 	{
 		this.affectedCreature = affectedCreature;
 
-		this.originalMoveSpeed = affectedCreature.moveSpeed;
 		this.moveSpeedBuff = this.GetMoveSpeedBuff();
 
 		this.ApplySpeedUp();
@@ -53,12 +51,12 @@ public class SpeedUp : EquipStatusEffect {
 
 	private void ApplySpeedUp()
 	{
-		this.affectedCreature.moveSpeed = originalMoveSpeed + (originalMoveSpeed * moveSpeedBuff);
+		this.affectedCreature.moveSpeedBonus = (this.affectedCreature.moveSpeed * moveSpeedBuff);
 	}
 
 	public override void StopStatusEffect()
 	{
-		this.affectedCreature.moveSpeed = originalMoveSpeed;
+		this.affectedCreature.moveSpeedBonus = 0f;
 		Destroy(this);
 	}
 }
