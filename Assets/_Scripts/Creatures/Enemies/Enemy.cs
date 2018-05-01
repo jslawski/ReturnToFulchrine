@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : Creature 
 {
-	public void Start()
+	public virtual void Start()
 	{
 		this.SetActiveArmor(Resources.Load<Armor>(ScriptableObjectPaths.LightArmorPath + ScriptableObjectPaths.UncommonEquipmentDirectoryName + "Leather"));
 		this.SetActiveWeapon(Resources.Load<Weapon>(ScriptableObjectPaths.WeaponsPath + "Unarmed"));

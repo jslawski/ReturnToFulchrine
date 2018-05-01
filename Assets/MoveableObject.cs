@@ -12,7 +12,7 @@ public class MoveableObject : MonoBehaviour {
 	private Collider objectCollider;
 	private Vector3 correctionVector;
 
-	protected Vector2 velocity = Vector3.zero;
+	public Vector2 velocity = Vector3.zero;
 	protected Vector2 rotateDirection = Vector3.zero;
 
 	public float moveSpeed = 0f;
