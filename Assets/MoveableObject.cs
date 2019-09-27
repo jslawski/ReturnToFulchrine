@@ -8,8 +8,8 @@ public class MoveableObject : MonoBehaviour {
 	[SerializeField]
 	private LayerMask ignoreColliderLayers;
 
-	[SerializeField]
-	private Collider objectCollider;
+
+	public Collider objectCollider;
 	private Vector3 correctionVector;
 
 	public Vector2 velocity = Vector3.zero;
@@ -32,7 +32,7 @@ public class MoveableObject : MonoBehaviour {
 
 	public void Move()
 	{
-		this.gameObject.transform.Translate(velocity * Time.deltaTime * (this.moveSpeed + this.moveSpeedBonus), Space.World);
+		this.gameObject.transform.Translate(velocity * Time.fixedDeltaTime * (this.moveSpeed + this.moveSpeedBonus), Space.World);
 	}
 
 	public void Rotate()
