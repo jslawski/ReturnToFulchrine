@@ -6,6 +6,9 @@ public class RangedProjectile : MonoBehaviour, IDamageDealer
 {
 	private float lifetime;
 
+    [HideInInspector]
+    public Weapon weaponSource;
+
 	#region IDamageDealer
 	private float _damageOutput = 0f;
 
@@ -43,7 +46,7 @@ public class RangedProjectile : MonoBehaviour, IDamageDealer
 
 		if (victim != null)
 		{
-			victim.TakeDamage(this.damageOutput);
+			victim.TakeDamage(this.damageOutput, false, this.weaponSource);
 			Destroy(this.gameObject);
 		}
 	}

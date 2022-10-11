@@ -40,10 +40,13 @@ public class MoveableObject : MonoBehaviour {
 		this.gameObject.transform.up = rotateDirection;
 	}
 
-	//TODO: Look into why this needs to be OnTriggerStay instead of OnTriggerEnter!
-	//Theory: ComputePenetration has a rounding error that does not COMPLETELY move a moveableObject out of an obstacle.  As such, it moves it
-	//ALMOST out, but not completely, so the moveable object doesn't re-enter the collider to trigger another resoultion.
-	public void OnTriggerStay(Collider other)
+    //TODO: Look into why this needs to be OnTriggerStay instead of OnTriggerEnter!
+    //Theory: ComputePenetration has a rounding error that does not COMPLETELY move a moveableObject out of an obstacle.  As such, it moves it
+    //ALMOST out, but not completely, so the moveable object doesn't re-enter the collider to trigger another resoultion.
+
+    //NOTE: This is buggy!!!!
+    // (If an enemy was completely enveloped in a player's attack zone, it would get pushed up and start floating).
+    /*public void OnTriggerStay(Collider other)
 	{
 		int colliderLayerMask = 1 << other.gameObject.layer;
 
@@ -61,5 +64,5 @@ public class MoveableObject : MonoBehaviour {
 		{
 			this.gameObject.transform.position = this.gameObject.transform.position + ((resolutionDirection * resolutionDistance));
 		}
-	}
+	}*/
 }

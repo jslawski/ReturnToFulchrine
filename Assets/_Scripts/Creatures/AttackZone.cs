@@ -47,7 +47,8 @@ public class AttackZone : MonoBehaviour, IDamageDealer {
 
 		if (knockbackRoll < this.controllingCreature.activeWeapon.knockbackChance)
 		{
-			Vector3 knockbackDirection = this.controllingCreature.transform.up;
+            Debug.LogError("JPS Knocking back in direction of" + this.controllingCreature.transform.up);
+            Vector3 knockbackDirection = this.controllingCreature.transform.up;
 
 			victim.Knockback(knockbackDirection, this.controllingCreature.activeWeapon.knockbackDistance);
 		}

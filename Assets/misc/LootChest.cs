@@ -101,7 +101,7 @@ public class LootChest : InteractableObject {
 		{
 			return;
 		}
-			
+
 		switch (lootType)
 		{
 		case EquipmentType.Weapon:

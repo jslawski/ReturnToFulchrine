@@ -69,7 +69,7 @@ public abstract class Creature : MoveableObject, IDamageableObject
 
 	public virtual void TakeDamage(float damageDealt, bool rawDamage = false, Weapon weapon = null)
 	{
-		this.damageAnimator.enabled = true;
+        this.damageAnimator.enabled = true;
 
 		if (rawDamage == true)
 		{
@@ -306,7 +306,7 @@ public abstract class Creature : MoveableObject, IDamageableObject
 
 	public virtual void ReturnToDefaultMaterial()
 	{
-		this.damageAnimator.enabled = false;
+        this.damageAnimator.enabled = false;
 		//Put default renderer material here;
 	}
 

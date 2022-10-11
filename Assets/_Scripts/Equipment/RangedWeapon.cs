@@ -43,6 +43,8 @@ public class RangedWeapon : Weapon
 			GameObject currentProjectileObject = GameObject.Instantiate(this.rangedProjectilePrefab, wieldingCreature.transform.position, new Quaternion()) as GameObject;
 			RangedProjectile currentProjectile = currentProjectileObject.GetComponent<RangedProjectile>();
 
+            currentProjectile.weaponSource = this;
+
 			Vector3 launchDirection = wieldingCreature.transform.up;
 
 			if (this.useAimAssist == true)
