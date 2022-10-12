@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using InControl;
 using System;
 
 /// <summary>
@@ -9,20 +8,15 @@ using System;
 /// Movement, collision, HP, SP, etc.
 /// </summary>
 public class Player : Creature 
-{
-	private InputDevice device;
-
-	public PlayerControls currentControls;
+{		
+    public PlayerControls controls;
 
 	private PlayerCharacter currentCharacter;
 
 	[SerializeField]
 	private MeshRenderer meshRenderer;
 
-	private static Dictionary<string, PlayerControls> playerControlsDict;
-	public const string DefaultPlayerControlsKey = "default";
-	public const string DisablePlayerControlsKey = "disable";
-	public const string LockRotationPlayerControlsKey = "lockRotation";
+    private float analogDeadZone = 0.3f;
 
 	#region IDamageableObject implementation
 	public override float hitPoints
@@ -79,22 +73,51 @@ public class Player : Creature
 	// Use this for initialization
 	public override void Awake() 
 	{
-		this.device = InputManager.Devices[0];
-		this.currentControls = new PlayerControls(this.device);
-		Player.playerControlsDict = new Dictionary<string, PlayerControls>();
-		this.PopulatePlayerControls();
-		base.Awake();
+        this.controls = new PlayerControls();
+
+        this.controls.Player.LeftAnalog.performed += context => this.velocity = context.ReadValue<Vector2>();
+        this.controls.Player.RightAnalog.performed += context => this.rotateDirection = context.ReadValue<Vector2>();
+        this.controls.Player.LeftAnalog.canceled += context => this.velocity = Vector2.zero;
+        this.controls.Player.RightAnalog.canceled += context => this.rotateDirection = Vector2.zero;
+
+        this.controls.Player.RightBumper.performed += context => this.SwapCharacter(CharacterSelector.GetCharacterRight());
+        this.controls.Player.LeftBumper.performed += context => this.SwapCharacter(CharacterSelector.GetCharacterLeft());
+
+        this.controls.Player.SouthButton.performed += context => this.Attack();
+        this.controls.Player.WestButton.performed += context => this.InteractWithClosestObject();
+
+        base.Awake();
 	}
 
-	public void Start()
+    public void OnEnable()
+    {
+        this.controls.Enable();
+    }
+
+    public void OnDisable()
+    {
+        this.controls.Disable();
+    }
+    public void Start()
 	{
 		this.currentCharacter = CharacterSelector.GetCharacterByType(PlayerCharacterType.Warrior);
 		this.SwapCharacter(this.currentCharacter);
 	}
 
 	// Update is called once per frame
-	private void Update () {
-		if (this.currentControls.movementControl != null)
+	private void Update ()
+    {
+        if (this.velocity.magnitude < this.analogDeadZone)
+        {
+            this.velocity = Vector2.zero;
+        }
+        if (this.rotateDirection.magnitude < this.analogDeadZone)
+        {
+            this.rotateDirection = Vector2.zero;
+        }
+        
+        /*
+        if (this.currentControls.movementControl != null)
 		{
 			this.velocity = this.currentControls.movementControl.Vector;
 		}
@@ -143,10 +166,11 @@ public class Player : Creature
 			//this.DropEquipment(this.activeArmor);
 			this.ApplyStatusEffects(this.activeWeapon);
 		}
+        */
 	}
 
-	//Begin depleting inflicted status effects in the background
-	private void DepleteInflictedStatusEffects()
+    //Begin depleting inflicted status effects in the background
+    private void DepleteInflictedStatusEffects()
 	{
 		foreach (InflictedStatusEffect effect in this.currentCharacter.activeInflictedStatusEffects)
 		{
@@ -171,6 +195,8 @@ public class Player : Creature
 		this.meshRenderer.material = this.currentCharacter.characterMaterial;
 		this.moveSpeed = this.currentCharacter.moveSpeed;
 
+        Debug.LogError("Character Weapon: " + this.currentCharacter.weapon.name);
+
 		this.SetActiveWeapon(this.currentCharacter.weapon);
 		this.SetActiveArmor(this.currentCharacter.armor);
 
@@ -179,18 +205,22 @@ public class Player : Creature
 
 	public override void DisableMovement()
 	{
-		this.currentControls = Player.playerControlsDict[Player.DisablePlayerControlsKey];
+        Debug.LogError("DisableMovement called");
+        
+        //this.currentControls = Player.playerControlsDict[Player.DisablePlayerControlsKey];
 	}
 
 	public override void EnableMovement()
 	{
-		this.currentControls = Player.playerControlsDict[Player.DefaultPlayerControlsKey];
-	}
+        Debug.LogError("EnableMovement called");
+        //this.currentControls = Player.playerControlsDict[Player.DefaultPlayerControlsKey];
+    }
 
 	public override void LockToRotation()
 	{
-		this.currentControls = Player.playerControlsDict[Player.LockRotationPlayerControlsKey];
-	}
+        Debug.LogError("LockToRotation called");
+        //this.currentControls = Player.playerControlsDict[Player.LockRotationPlayerControlsKey];
+    }
 
 	private PlayerCharacterType GetPlayerCharacterFromEquipmentClass(CreatureType creatureType)
 	{
@@ -225,7 +255,7 @@ public class Player : Creature
 			this.SetActiveArmor(selectedArmor);
 		}
 	}
-
+    
 	#region Creature implementation
 	public override void EquipWeapon(Weapon weaponToEquip)
 	{
@@ -282,6 +312,7 @@ public class Player : Creature
 	}
 	#endregion
 
+    /*
 	#region PlayerControl Dictionary
 	public void PopulatePlayerControls()
 	{
@@ -289,7 +320,7 @@ public class Player : Creature
 		Player.playerControlsDict.Add(Player.DisablePlayerControlsKey, this.PopulateDisablePlayerControls());
 		Player.playerControlsDict.Add(Player.LockRotationPlayerControlsKey, this.PopulateLockRotationPlayerControls());
 	}
-
+    
 	public PlayerControls PopulateDefaultPlayerControls()
 	{
 		return new PlayerControls(this.device);
@@ -305,10 +336,12 @@ public class Player : Creature
 		return new PlayerControls(null, this.device.LeftStick, this.device.RightStick, this.device.LeftBumper, this.device.RightBumper, this.device.Action1, null);
 	}
 	#endregion
+    */
 
 	public override void ReturnToDefaultMaterial()
 	{
 		this.damageAnimator.enabled = false;
 		this.meshRenderer.material = this.currentCharacter.characterMaterial;
-	}
+	}    
+    
 }

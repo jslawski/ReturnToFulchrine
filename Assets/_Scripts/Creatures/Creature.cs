@@ -171,8 +171,6 @@ public abstract class Creature : MoveableObject, IDamageableObject
 		this.interactableTriggerZone.onInteractableZoneExited += this.RemoveInteractableObject;
 	}
 
-
-
 	public virtual void ActivateEquipStatusEffectsForEquipment(Equipment equipment)
 	{
 		foreach (AggregateStatusEffectMetaData metaData in equipment.statusEffectMetaData)
@@ -240,7 +238,7 @@ public abstract class Creature : MoveableObject, IDamageableObject
 
 	public virtual void SetActiveWeapon(Weapon weapon)
 	{
-		if (this.activeWeapon.statusEffectMetaData != null)
+		if (this.activeWeapon != null && this.activeWeapon.statusEffectMetaData != null)
 		{
 			this.DeactivateEquipStatusEffectsForEquipment(this.activeWeapon);
 		}
@@ -252,7 +250,7 @@ public abstract class Creature : MoveableObject, IDamageableObject
 
 	public virtual void SetActiveArmor(Armor armor)
 	{
-		if (this.activeArmor.statusEffectMetaData != null)
+		if (this.activeArmor != null && this.activeArmor.statusEffectMetaData != null)
 		{
 			this.DeactivateEquipStatusEffectsForEquipment(this.activeArmor);
 		}
